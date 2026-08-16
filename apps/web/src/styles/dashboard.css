@@ -1,0 +1,260 @@
+/* =============================================================================
+ * SYNTROPHOS DASHBOARD — BEAUTIFUL UI INTERACTION SYSTEM
+ * Black & Amber Technical Architecture with Fluid Micro-Interactions
+ * ============================================================================= */
+
+/* --- Dynamic Island Live Activity --- */
+.dynamic-island-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 8, 2, 0.95);
+  border: 1px solid rgba(255, 170, 48, 0.35);
+  border-radius: 9999px;
+  padding: 6px 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 140, 20, 0.15);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+  user-select: none;
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dynamic-island-container:hover {
+  border-color: rgba(255, 200, 100, 0.6);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.9), 0 0 22px rgba(255, 170, 48, 0.25);
+  transform: translateY(-1px);
+}
+
+.dynamic-island-container--expanded {
+  border-radius: 12px;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 580px;
+  background: rgba(18, 10, 2, 0.98);
+  border-color: rgba(255, 170, 48, 0.55);
+}
+
+/* Island Pulse Indicator */
+.island-pulse-orb {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffaa30;
+  box-shadow: 0 0 10px #ffaa30;
+  display: inline-block;
+  flex-shrink: 0;
+  animation: islandPulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.island-pulse-orb--idle {
+  background: #885522;
+  box-shadow: none;
+  animation: none;
+}
+
+.island-pulse-orb--success {
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+}
+
+.island-pulse-orb--alert {
+  background: #ff5533;
+  box-shadow: 0 0 10px #ff5533;
+  animation: islandPulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes islandPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.8); opacity: 0.5; }
+}
+
+/* --- Command Center Deck --- */
+.dashboard-command-box {
+  position: relative;
+  width: 100%;
+  background: rgba(16, 9, 2, 0.85);
+  border: 1px solid rgba(255, 170, 48, 0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 170, 48, 0.15);
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dashboard-command-box:focus-within {
+  border-color: rgba(255, 200, 100, 0.7);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 170, 48, 0.2), inset 0 1px 0 rgba(255, 170, 48, 0.3);
+  transform: translateY(-1px);
+}
+
+.dashboard-command-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: #ffcc66;
+  padding: 8px 0;
+}
+
+.dashboard-command-input::placeholder {
+  color: #885522;
+  font-family: 'Space Grotesk', 'Courier New', monospace;
+  letter-spacing: 0.02em;
+}
+
+/* Directive Chips */
+.directive-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #d99a4e;
+  background: rgba(255, 170, 48, 0.06);
+  border: 1px solid rgba(255, 170, 48, 0.2);
+  cursor: pointer;
+  user-select: none;
+  transition: all 140ms ease;
+}
+
+.directive-chip:hover {
+  background: rgba(255, 170, 48, 0.18);
+  border-color: rgba(255, 200, 100, 0.6);
+  color: #ffcc66;
+  transform: translateY(-1px);
+}
+
+.directive-chip--active {
+  background: rgba(120, 60, 0, 0.6);
+  border-color: #ffaa30;
+  color: #ffcc66;
+  box-shadow: 0 0 10px rgba(255, 140, 20, 0.25);
+}
+
+/* --- Operational Stream Rows --- */
+.operation-stream-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: rgba(25, 13, 2, 0.45);
+  border: 1px solid rgba(255, 170, 48, 0.15);
+  cursor: pointer;
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.operation-stream-item:hover {
+  background: rgba(50, 25, 5, 0.7);
+  border-color: rgba(255, 170, 48, 0.45);
+  transform: translateX(3px);
+}
+
+/* --- Expandable Floating Action Bar --- */
+.floating-action-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(12, 6, 1, 0.95);
+  border: 1px solid rgba(255, 170, 48, 0.35);
+  border-radius: 9999px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 140, 20, 0.15);
+  backdrop-filter: blur(16px);
+  z-index: 40;
+  transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-action-bar:hover {
+  border-color: rgba(255, 200, 100, 0.65);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.9), 0 0 24px rgba(255, 170, 48, 0.25);
+}
+
+.action-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #d99a4e;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.action-bar-btn:hover {
+  background: rgba(255, 170, 48, 0.15);
+  border-color: rgba(255, 170, 48, 0.3);
+  color: #ffcc66;
+}
+
+/* --- Morphing Detail Modal --- */
+.morphing-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+  animation: fadeInModal 180ms ease forwards;
+}
+
+.morphing-modal-card {
+  width: 100%;
+  max-width: 640px;
+  background: #0d0702;
+  border: 1px solid rgba(255, 170, 48, 0.5);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 140, 20, 0.2);
+  animation: scaleUpModal 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUpModal {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Mode Switcher Tabs */
+.mode-switcher-tab {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #885522;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.mode-switcher-tab--active {
+  color: #ffcc66;
+  background: rgba(120, 60, 0, 0.6);
+  box-shadow: 0 0 10px rgba(255, 140, 20, 0.25) inset;
+}
