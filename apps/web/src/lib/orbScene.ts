@@ -16,13 +16,18 @@ export interface OrbSceneApi {
   dispose(): void;
 }
 
+export interface OrbSceneOptions {
+  onReady?: () => void;
+  onError?: (error: Error) => void;
+}
+
 const HOME_POSITION = new THREE.Vector3(0, 0.5, 5.5);
 const MIN_DISTANCE = 0.6;
 const MAX_DISTANCE = 40;
 
-export function createOrbScene(container: HTMLElement): OrbSceneApi {
-  const width = container.clientWidth;
-  const height = container.clientHeight;
+export function createOrbScene(container: HTMLElement, options?: OrbSceneOptions): OrbSceneApi {
+  const width = container.clientWidth || window.innerWidth || 800;
+  const height = container.clientHeight || window.innerHeight || 600;
 
   // ——— SCENE ———
   const scene = new THREE.Scene();
@@ -698,121 +703,132 @@ export function createOrbScene(container: HTMLElement): OrbSceneApi {
   let flickerTimer = 0;
   let rafId = 0;
   let disposed = false;
+  let isFirstFrame = true;
 
   function animate() {
     if (disposed) return;
     rafId = requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
 
-    // Outer shell rotation
-    outerShell.rotation.y += 0.0015;
-    outerShell.rotation.x = Math.sin(t * 0.08) * 0.05;
+    try {
+      // Outer shell rotation
+      outerShell.rotation.y += 0.0015;
+      outerShell.rotation.x = Math.sin(t * 0.08) * 0.05;
 
-    // Panel group follows shell but with slight offset
-    panelGroup.rotation.y += 0.0018;
-    panelGroup.rotation.x = Math.sin(t * 0.08 + 0.5) * 0.04;
+      // Panel group follows shell but with slight offset
+      panelGroup.rotation.y += 0.0018;
+      panelGroup.rotation.x = Math.sin(t * 0.08 + 0.5) * 0.04;
 
-    // Secondary shell counter-rotates slowly
-    shell2.rotation.y -= 0.001;
-    shell2.rotation.z = Math.sin(t * 0.12) * 0.03;
+      // Secondary shell counter-rotates slowly
+      shell2.rotation.y -= 0.001;
+      shell2.rotation.z = Math.sin(t * 0.12) * 0.03;
 
-    // Inner core — opposite, faster
-    innerCore.rotation.y -= 0.005;
-    innerCore.rotation.z += 0.002;
-    innerCore.rotation.x = Math.cos(t * 0.1) * 0.08;
+      // Inner core — opposite, faster
+      innerCore.rotation.y -= 0.005;
+      innerCore.rotation.z += 0.002;
+      innerCore.rotation.x = Math.cos(t * 0.1) * 0.08;
 
-    // Innermost wireframe
-    icoWire.rotation.x += 0.008;
-    icoWire.rotation.y += 0.012;
+      // Innermost wireframe
+      icoWire.rotation.x += 0.008;
+      icoWire.rotation.y += 0.012;
 
-    // Core pulse — dramatic surges but mostly transparent
-    const wave1 = Math.sin(t * 1.2);
-    const wave3 = Math.pow(Math.max(0, Math.sin(t * 0.4)), 5); // rare big surge
-    const wave4 = Math.pow(Math.max(0, Math.sin(t * 0.7 + 2)), 8); // mega surge
-    const fadeOut = Math.pow(Math.max(0, Math.sin(t * 0.25)), 3); // periodic full transparency
-    const surge = wave3 * 1.5 + wave4 * 2.0;
-    const coreScale = 1 + surge + Math.sin(t * 5) * 0.05;
-    coreSphere.scale.setScalar(coreScale);
-    // Opacity: mostly very low (0-0.15), sometimes fully transparent, brief bright on surge
-    const coreOpacity = Math.max(
-      0,
-      (0.08 + wave1 * 0.05 + surge * 0.2) * (1 - fadeOut * 0.95),
-    );
-    coreSphereMat.opacity = Math.min(0.6, coreOpacity);
-    glowSphere.scale.setScalar(1 + surge * 0.8);
-    glowSphereMat.opacity = Math.max(0, (0.03 + surge * 0.08) * (1 - fadeOut * 0.9));
-    // Icosahedron wireframe stays visible even when glow fades
-    icoWire.scale.setScalar(1 + surge * 0.6);
-    icoWireMat.opacity = Math.min(1, 0.5 + surge * 0.4);
-
-    // Debris orbits
-    debris.forEach((d) => {
-      const u = d.userData as DebrisOrbit;
-      const a = t * u.speed + u.phase;
-      d.position.set(
-        u.orbitR * Math.cos(a) * Math.cos(u.tiltX),
-        u.orbitR * Math.sin(u.tiltX) * Math.sin(a * 0.8) + Math.sin(a * 0.3 + u.tiltZ) * 0.2,
-        u.orbitR * Math.sin(a) * Math.cos(u.tiltZ),
+      // Core pulse — dramatic surges but mostly transparent
+      const wave1 = Math.sin(t * 1.2);
+      const wave3 = Math.pow(Math.max(0, Math.sin(t * 0.4)), 5); // rare big surge
+      const wave4 = Math.pow(Math.max(0, Math.sin(t * 0.7 + 2)), 8); // mega surge
+      const fadeOut = Math.pow(Math.max(0, Math.sin(t * 0.25)), 3); // periodic full transparency
+      const surge = wave3 * 1.5 + wave4 * 2.0;
+      const coreScale = 1 + surge + Math.sin(t * 5) * 0.05;
+      coreSphere.scale.setScalar(coreScale);
+      // Opacity: mostly very low (0-0.15), sometimes fully transparent, brief bright on surge
+      const coreOpacity = Math.max(
+        0,
+        (0.08 + wave1 * 0.05 + surge * 0.2) * (1 - fadeOut * 0.95),
       );
-      d.rotation.x += 0.015;
-      d.rotation.z += 0.01;
-    });
+      coreSphereMat.opacity = Math.min(0.6, coreOpacity);
+      glowSphere.scale.setScalar(1 + surge * 0.8);
+      glowSphereMat.opacity = Math.max(0, (0.03 + surge * 0.08) * (1 - fadeOut * 0.9));
+      // Icosahedron wireframe stays visible even when glow fades
+      icoWire.scale.setScalar(1 + surge * 0.6);
+      icoWireMat.opacity = Math.min(1, 0.5 + surge * 0.4);
 
-    // Text drift
-    const driftGroups: [THREE.Group, number][] = [
-      [textOuter, 1],
-      [textInner, 2],
-      [textAmbient, 1.2],
-    ];
-    for (const [group, mult] of driftGroups) {
-      group.children.forEach((sp) => {
-        const u = sp.userData as SpriteDrift;
-        u.theta += u.speed * mult;
-        sp.position.set(
-          u.r * Math.sin(u.phi) * Math.cos(u.theta),
-          u.r * Math.cos(u.phi),
-          u.r * Math.sin(u.phi) * Math.sin(u.theta),
+      // Debris orbits
+      debris.forEach((d) => {
+        const u = d.userData as DebrisOrbit;
+        const a = t * u.speed + u.phase;
+        d.position.set(
+          u.orbitR * Math.cos(a) * Math.cos(u.tiltX),
+          u.orbitR * Math.sin(u.tiltX) * Math.sin(a * 0.8) + Math.sin(a * 0.3 + u.tiltZ) * 0.2,
+          u.orbitR * Math.sin(a) * Math.cos(u.tiltZ),
         );
+        d.rotation.x += 0.015;
+        d.rotation.z += 0.01;
       });
+
+      // Text drift
+      const driftGroups: [THREE.Group, number][] = [
+        [textOuter, 1],
+        [textInner, 2],
+        [textAmbient, 1.2],
+      ];
+      for (const [group, mult] of driftGroups) {
+        group.children.forEach((sp) => {
+          const u = sp.userData as SpriteDrift;
+          u.theta += u.speed * mult;
+          sp.position.set(
+            u.r * Math.sin(u.phi) * Math.cos(u.theta),
+            u.r * Math.cos(u.phi),
+            u.r * Math.sin(u.phi) * Math.sin(u.theta),
+          );
+        });
+      }
+
+      // Scan rings sweeping
+      const scanY1 = Math.sin(t * 0.4) * R1;
+      scanRing1.position.y = scanY1;
+      const scanS1 = Math.sqrt(Math.max(0, R1 * R1 - scanY1 * scanY1)) / R1;
+      scanRing1.scale.set(scanS1, scanS1, 1);
+      (scanRing1.material as THREE.MeshBasicMaterial).opacity = 0.2 * scanS1;
+
+      const scanY2 = Math.sin(t * 0.6 + 2) * R3;
+      scanRing2.position.y = scanY2;
+      const scanS2 = Math.sqrt(Math.max(0, R3 * R3 - scanY2 * scanY2)) / R3;
+      scanRing2.scale.set(scanS2, scanS2, 1);
+      (scanRing2.material as THREE.MeshBasicMaterial).opacity = 0.15 * scanS2;
+
+      // Dust rotation
+      dustPoints.rotation.y += 0.0002;
+
+      // Random flicker on some panels
+      flickerTimer += 0.016;
+      if (flickerTimer > 0.1) {
+        flickerTimer = 0;
+        panelGroup.children.forEach((p) => {
+          if (Math.random() > 0.95) {
+            p.visible = !p.visible;
+          }
+        });
+      }
+
+      // Bloom pulse
+      bloom.strength = 1.6 + Math.sin(t * 0.8) * 0.3;
+
+      // Update chromatic aberration time
+      if (chromaticPass.uniforms && chromaticPass.uniforms["uTime"]) {
+        chromaticPass.uniforms["uTime"].value = t;
+      }
+
+      controls.update();
+      composer.render();
+
+      if (isFirstFrame) {
+        isFirstFrame = false;
+        options?.onReady?.();
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      options?.onError?.(error);
     }
-
-    // Scan rings sweeping
-    const scanY1 = Math.sin(t * 0.4) * R1;
-    scanRing1.position.y = scanY1;
-    const scanS1 = Math.sqrt(Math.max(0, R1 * R1 - scanY1 * scanY1)) / R1;
-    scanRing1.scale.set(scanS1, scanS1, 1);
-    (scanRing1.material as THREE.MeshBasicMaterial).opacity = 0.2 * scanS1;
-
-    const scanY2 = Math.sin(t * 0.6 + 2) * R3;
-    scanRing2.position.y = scanY2;
-    const scanS2 = Math.sqrt(Math.max(0, R3 * R3 - scanY2 * scanY2)) / R3;
-    scanRing2.scale.set(scanS2, scanS2, 1);
-    (scanRing2.material as THREE.MeshBasicMaterial).opacity = 0.15 * scanS2;
-
-    // Dust rotation
-    dustPoints.rotation.y += 0.0002;
-
-    // Random flicker on some panels
-    flickerTimer += 0.016;
-    if (flickerTimer > 0.1) {
-      flickerTimer = 0;
-      panelGroup.children.forEach((p) => {
-        if (Math.random() > 0.95) {
-          p.visible = !p.visible;
-        }
-      });
-    }
-
-    // Bloom pulse
-    bloom.strength = 1.6 + Math.sin(t * 0.8) * 0.3;
-
-    // Update chromatic aberration time
-    if (chromaticPass.uniforms && chromaticPass.uniforms["uTime"]) {
-      chromaticPass.uniforms["uTime"].value = t;
-    }
-
-    controls.update();
-    composer.render();
   }
 
   animate();

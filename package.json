@@ -11,6 +11,7 @@
   "scripts": {
     "build": "pnpm -r --if-present run build",
     "dev": "pnpm --filter @syntrophos/api dev",
+    "dev:web": "pnpm --filter @syntrophos/web dev",
     "lint": "pnpm run lint:eslint && pnpm run format:check",
     "lint:eslint": "eslint . --max-warnings=0",
     "format": "prettier --write \"**/*.{ts,js,json,yml,yaml}\"",

@@ -10,7 +10,12 @@ const MODE_LABEL: Record<TrackerStatus["mode"], string> = {
   zoom: "ZOOM",
 };
 
-export default function SyntrophosOrb() {
+export interface SyntrophosOrbProps {
+  readonly onReady?: () => void;
+  readonly onError?: (error: Error) => void;
+}
+
+export default function SyntrophosOrb({ onReady, onError }: SyntrophosOrbProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
@@ -24,15 +29,27 @@ export default function SyntrophosOrb() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const scene = createOrbScene(container);
-    sceneRef.current = scene;
-    return () => {
-      trackerRef.current?.stop();
-      trackerRef.current = null;
-      scene.dispose();
-      sceneRef.current = null;
-    };
-  }, []);
+    try {
+      const scene = createOrbScene(container, {
+        onReady: () => {
+          onReady?.();
+        },
+        onError: (err) => {
+          onError?.(err);
+        },
+      });
+      sceneRef.current = scene;
+      return () => {
+        trackerRef.current?.stop();
+        trackerRef.current = null;
+        scene.dispose();
+        sceneRef.current = null;
+      };
+    } catch (err) {
+      const errorObj = err instanceof Error ? err : new Error(String(err));
+      onError?.(errorObj);
+    }
+  }, [onReady, onError]);
 
   const stopGestures = useCallback(() => {
     trackerRef.current?.stop();
