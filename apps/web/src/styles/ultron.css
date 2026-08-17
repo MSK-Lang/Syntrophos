@@ -12,7 +12,7 @@ body {
 body {
   background: #000;
   overflow: hidden;
-  font-family: "Courier New", monospace;
+  font-family: var(--font-sans);
 }
 
 .orb-root {
@@ -75,7 +75,7 @@ body {
   position: fixed;
   z-index: 20;
   color: #ffaa30;
-  font-family: "Courier New", monospace;
+  font-family: var(--font-mono);
   user-select: none;
 }
 
@@ -96,7 +96,7 @@ body {
   border: 1px solid rgba(255, 170, 48, 0.45);
   border-radius: 4px;
   color: #ffaa30;
-  font-family: "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: 15px;
   font-weight: bold;
   letter-spacing: 0.08em;

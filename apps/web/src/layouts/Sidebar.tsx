@@ -11,6 +11,10 @@ import {
   IconCalendar,
   IconBot,
   IconSettings,
+  IconMail,
+  IconWorkflow,
+  IconFolder,
+  IconGraph,
   type IconComponent,
 } from '@/lib/icons.js';
 
@@ -23,20 +27,23 @@ type NavItem = {
 };
 
 const SYSTEM_NAV: readonly NavItem[] = [
-  { id: 'core', label: 'CORE', to: '/core', Icon: IconCore },
-  { id: 'dashboard', label: 'DASHBOARD', to: '/dashboard', Icon: IconDashboard },
+  { id: 'core', label: 'Core', to: '/core', Icon: IconCore },
+  { id: 'dashboard', label: 'Dashboard', to: '/dashboard', Icon: IconDashboard },
 ];
 
 const MODULE_NAV: readonly NavItem[] = [
-  { id: 'chat', label: 'CHAT', to: '/chat', Icon: IconChat, badge: 3 },
-  { id: 'tasks', label: 'TASKS', to: '/tasks', Icon: IconTasks, badge: 5 },
-  { id: 'notes', label: 'NOTES', to: '/notes', Icon: IconNotes },
-  { id: 'calendar', label: 'CALENDAR', to: '/calendar', Icon: IconCalendar },
-  { id: 'agents', label: 'AGENTS', to: '/agents', Icon: IconBot, badge: 1 },
+  { id: 'inbox', label: 'Inbox', to: '/inbox', Icon: IconMail, badge: 7 },
+  { id: 'chat', label: 'Chat', to: '/chat', Icon: IconChat, badge: 3 },
+  { id: 'tasks', label: 'Tasks', to: '/tasks', Icon: IconTasks, badge: 5 },
+  { id: 'projects', label: 'Projects', to: '/projects', Icon: IconFolder, badge: 3 },
+  { id: 'notes', label: 'Notes', to: '/notes', Icon: IconNotes },
+  { id: 'people-schedule', label: 'People & Schedule', to: '/calendar', Icon: IconCalendar, badge: 2 },
+  { id: 'intelligence', label: 'Intelligence', to: '/intelligence', Icon: IconBot, badge: 5 },
+  { id: 'knowledge', label: 'Knowledge', to: '/knowledge', Icon: IconGraph, badge: 184 },
 ];
 
 const UTILITY_NAV: readonly NavItem[] = [
-  { id: 'settings', label: 'SETTINGS', to: '/settings', Icon: IconSettings },
+  { id: 'settings', label: 'Settings', to: '/settings', Icon: IconSettings },
 ];
 
 export function Sidebar({
@@ -64,7 +71,7 @@ export function Sidebar({
       style={{
         background: '#040200',
         borderRight: '1px solid rgba(255, 170, 48, 0.25)',
-        fontFamily: '"Courier New", monospace, sans-serif',
+        fontFamily: 'var(--font-sans)',
       }}
     >
       <div
@@ -90,10 +97,11 @@ export function Sidebar({
         <span
           className="shell-sidebar__brand-name"
           style={{
-            fontFamily: '"Courier New", monospace',
+            fontFamily: 'var(--font-sans)',
             color: '#ffaa30',
             fontSize: '13px',
-            letterSpacing: '0.2em',
+            fontWeight: 700,
+            letterSpacing: '0.15em',
             textShadow: '0 0 8px rgba(255, 170, 48, 0.6)',
           }}
         >
@@ -115,6 +123,7 @@ export function Sidebar({
           <div
             className="shell-sidebar__section-title"
             style={{
+              fontFamily: 'var(--font-mono)',
               fontSize: '9px',
               letterSpacing: '0.15em',
               color: '#885522',
@@ -141,6 +150,7 @@ export function Sidebar({
           <div
             className="shell-sidebar__section-title"
             style={{
+              fontFamily: 'var(--font-mono)',
               fontSize: '9px',
               letterSpacing: '0.15em',
               color: '#885522',
@@ -190,10 +200,10 @@ export function Sidebar({
       >
         <Avatar size="sm" name={user?.displayName ?? user?.name ?? 'O'} tone="amber" />
         <div className="shell-sidebar__footer-user" style={{ minWidth: 0, flex: '1 1 auto' }}>
-          <div style={{ fontSize: '11px', color: '#ffcc66', fontWeight: 600, letterSpacing: '0.05em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {user?.displayName ?? user?.name ?? 'OPERATOR'}
+          <div style={{ fontFamily: 'var(--font-sans)', fontSize: '12px', color: '#ffcc66', fontWeight: 600, letterSpacing: '0.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {user?.displayName ?? user?.name ?? 'Operator'}
           </div>
-          <div style={{ fontSize: '9px', color: '#885522', fontFamily: 'monospace' }}>
+          <div style={{ fontSize: '9px', color: '#885522', fontFamily: 'var(--font-mono)' }}>
             SYS // ONLINE
           </div>
         </div>
@@ -228,7 +238,7 @@ function NavItemRow({
         display: 'flex',
         alignItems: 'center',
         gap: 10,
-        padding: '7px 12px',
+        padding: '8px 12px',
         borderRadius: 4,
         color: active ? '#ffcc66' : '#d99a4e',
         background: active ? 'rgba(120, 60, 0, 0.6)' : 'transparent',
@@ -236,9 +246,10 @@ function NavItemRow({
         boxShadow: active ? '0 0 10px rgba(255, 140, 20, 0.25) inset' : 'none',
         textShadow: active ? '0 0 6px rgba(255, 170, 48, 0.7)' : 'none',
         textDecoration: 'none',
-        fontSize: '12px',
-        fontWeight: active ? 700 : 500,
-        letterSpacing: '0.08em',
+        fontFamily: 'var(--font-sans)',
+        fontSize: '13px',
+        fontWeight: active ? 600 : 500,
+        letterSpacing: '0.01em',
         transition: 'all 120ms ease',
       }}
     >
@@ -258,6 +269,7 @@ function NavItemRow({
       {badge ? (
         <span
           style={{
+            fontFamily: 'var(--font-mono)',
             fontSize: '9px',
             padding: '1px 5px',
             borderRadius: 3,

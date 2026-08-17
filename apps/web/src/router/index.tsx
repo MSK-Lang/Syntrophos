@@ -2,13 +2,16 @@ import { Outlet, createBrowserRouter, Navigate, RouterProvider, type RouteObject
 import { AppShell } from '@/layouts/AppShell';
 import CorePage from '@/pages/CorePage';
 import DashboardPage from '@/pages/DashboardPage';
+import InboxPage from '@/pages/InboxPage';
 import ChatListPage from '@/pages/chat/ChatListPage';
 import ChatThreadPage from '@/pages/chat/ChatThreadPage';
 import NotesListPage from '@/pages/notes/NotesListPage';
 import NoteReaderPage from '@/pages/notes/NoteReaderPage';
 import TasksPage from '@/pages/TasksPage';
+import ProjectsPage from '@/pages/ProjectsPage';
 import CalendarPage from '@/pages/CalendarPage';
 import AgentsPage from '@/pages/AgentsPage';
+import WorkflowsPage from '@/pages/WorkflowsPage';
 import AgentDetailPage from '@/pages/AgentDetailPage';
 import VoicePage from '@/pages/VoicePage';
 import IntegrationsPage from '@/pages/IntegrationsPage';
@@ -29,6 +32,9 @@ import SettingsAppearancePage from '@/pages/settings/SettingsAppearancePage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import SignInPage from '@/pages/auth/SignInPage';
 import SignUpPage from '@/pages/auth/SignUpPage';
+import PeopleSchedulePage from '@/pages/PeopleSchedulePage';
+import IntelligencePage from '@/pages/IntelligencePage';
+import KnowledgePage from '@/pages/KnowledgePage';
 
 const shellRoutes: RouteObject = {
   element: (
@@ -38,6 +44,7 @@ const shellRoutes: RouteObject = {
   ),
   children: [
     { path: '/dashboard', element: <DashboardPage /> },
+    { path: '/inbox', element: <InboxPage /> },
     { path: '/starred', element: <StarredPage /> },
     { path: '/chat', element: <ChatListPage /> },
     { path: '/chat/new', element: <ChatThreadPage /> },
@@ -46,8 +53,13 @@ const shellRoutes: RouteObject = {
     { path: '/notes/new', element: <NoteReaderPage /> },
     { path: '/notes/*', element: <NoteReaderPage /> },
     { path: '/tasks', element: <TasksPage /> },
-    { path: '/calendar', element: <CalendarPage /> },
-    { path: '/agents', element: <AgentsPage /> },
+    { path: '/projects', element: <ProjectsPage /> },
+    { path: '/calendar', element: <PeopleSchedulePage /> },
+    { path: '/people-schedule', element: <PeopleSchedulePage /> },
+    { path: '/intelligence', element: <IntelligencePage /> },
+    { path: '/agents', element: <IntelligencePage /> },
+    { path: '/workflows', element: <IntelligencePage /> },
+    { path: '/knowledge', element: <KnowledgePage /> },
     { path: '/agents/:agentId', element: <AgentDetailPage /> },
     { path: '/agents/runs', element: <AgentDetailPage /> },
     { path: '/voice', element: <VoicePage /> },

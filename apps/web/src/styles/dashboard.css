@@ -101,7 +101,7 @@
 
 .dashboard-command-input::placeholder {
   color: #885522;
-  font-family: 'Space Grotesk', 'Courier New', monospace;
+  font-family: var(--font-sans);
   letter-spacing: 0.02em;
 }
 

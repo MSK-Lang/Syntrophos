@@ -296,5 +296,47 @@ export const IconPause: IconComponent = (props) => (
   </svg>
 );
 
+export const IconWorkflow: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <rect x="3" y="3" width="6" height="6" rx="1" />
+    <rect x="15" y="3" width="6" height="6" rx="1" />
+    <rect x="9" y="15" width="6" height="6" rx="1" />
+    <path d="M6 9v3a1 1 0 0 0 1 1h5m6-4v3a1 1 0 0 1-1 1h-5" />
+  </svg>
+);
+
+export const IconZap: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+);
+
+export const IconProject: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+export const IconUsers: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M9 21v-2a4 4 0 0 0-4-4H3a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+export const IconGraph: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <circle cx="6" cy="6" r="3" />
+    <circle cx="18" cy="6" r="3" />
+    <circle cx="12" cy="18" r="3" />
+    <line x1="8.5" y1="7.5" x2="15.5" y2="7.5" />
+    <line x1="7.5" y1="8.5" x2="10.5" y2="15.5" />
+    <line x1="16.5" y1="8.5" x2="13.5" y2="15.5" />
+  </svg>
+);
+
 export const IconAgents: IconComponent = IconBot;
 export const IconVoice: IconComponent = IconMic;

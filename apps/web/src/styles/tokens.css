@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark;
 
-  --font-display: 'Space Grotesk', 'Courier New', monospace, sans-serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 
   --radius-xs: 2px;

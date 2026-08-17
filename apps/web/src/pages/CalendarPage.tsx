@@ -17,7 +17,7 @@ import {
 import { useCalendar } from '@/lib/services/index.js';
 import type { CalendarEvent, Calendar } from '@/lib/services/calendar.contract.js';
 
-export default function CalendarPage() {
+export default function CalendarPage({ embedInWorkspace = false }: { readonly embedInWorkspace?: boolean }) {
   const { listCalendars, listEvents, createEvent, deleteEvent } = useCalendar();
 
   const [loading, setLoading] = useState(true);
@@ -99,82 +99,72 @@ export default function CalendarPage() {
       const draft: Record<string, unknown> = {
         calendarId: targetCalId,
         title: newTitle.trim(),
-        type: 'event',
-        allDay: false,
         startAt: startIso,
         endAt: endIso,
+        description: newDescription.trim() || undefined,
       };
-      if (newDescription) draft.description = newDescription;
 
-      const created = await createEvent?.(draft as never);
-
-      if (created) {
-        setEvents((prev) => [...prev, created]);
-        setIsCreateModalOpen(false);
-        setNewTitle('');
-        setNewDescription('');
-      }
+      await createEvent(draft as unknown as Parameters<typeof createEvent>[0]);
+      setIsCreateModalOpen(false);
+      setNewTitle('');
+      setNewDescription('');
+      await loadCalendarData();
     } catch (err) {
       setError(err as Error);
     }
   };
 
-  const handleDeleteEvent = async (id: string) => {
+  const handleDelete = async (id: string) => {
     try {
-      setEvents((cur) => cur.filter((x) => x.id !== id));
-      if (selectedEvent?.id === id) setSelectedEvent(null);
-      await deleteEvent?.(id);
-    } catch {
-      void loadCalendarData();
+      await deleteEvent(id);
+      setSelectedEvent(null);
+      await loadCalendarData();
+    } catch (err) {
+      setError(err as Error);
     }
   };
 
   return (
-    <div className="shell-page shell-page--wide" style={{ background: '#000000', color: '#ffcc66', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="shell-page shell-page--wide" style={{ background: '#000000', color: '#ffcc66', minHeight: embedInWorkspace ? 'auto' : '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Page Header */}
-      <PageHeader
-        variant="wide"
-        icon={<IconCalendar width={22} height={22} />}
-        title="CALENDAR // TEMPORAL WORKSPACE"
-        subtitle={`${cursor.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }).toUpperCase()} · ${visibleEvents.length} EVENTS`}
-        actions={[
-          {
-            id: 'today',
-            label: 'TODAY',
-            variant: 'ghost',
-            onAction: () => setCursor(startOfMonth(new Date())),
-          },
-          {
-            id: 'prev',
-            label: '',
-            variant: 'ghost',
-            icon: <IconChevronLeft width={16} height={16} />,
-            onAction: () => setCursor(addMonths(cursor, -1)),
-          },
-          {
-            id: 'next',
-            label: '',
-            variant: 'ghost',
-            icon: <IconChevronRight width={16} height={16} />,
-            onAction: () => setCursor(addMonths(cursor, 1)),
-          },
-          {
-            id: 'toggle-view',
-            label: viewMode === 'month' ? '▦ MONTH' : viewMode === 'week' ? '☰ WEEK' : '◷ AGENDA',
-            variant: 'ghost',
-            onAction: () =>
-              setViewMode((v) => (v === 'month' ? 'week' : v === 'week' ? 'agenda' : 'month')),
-          },
-          {
-            id: 'new-event',
-            label: '+ NEW EVENT',
-            variant: 'primary',
-            icon: <IconPlus width={14} height={14} />,
-            onAction: () => setIsCreateModalOpen(true),
-            primary: true,
-          },
-        ]}
-      />
+      {!embedInWorkspace && (
+        <PageHeader
+          variant="wide"
+          icon={<IconCalendar width={22} height={22} />}
+          title="CALENDAR // TEMPORAL WORKSPACE"
+          subtitle={`${cursor.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }).toUpperCase()} · ${visibleEvents.length} EVENTS`}
+          actions={[
+            {
+              id: 'today',
+              label: 'TODAY',
+              variant: 'ghost',
+              onAction: () => setCursor(startOfMonth(new Date())),
+            },
+            {
+              id: 'prev',
+              label: '',
+              variant: 'ghost',
+              icon: <IconChevronLeft width={16} height={16} />,
+              onAction: () => setCursor(addMonths(cursor, -1)),
+            },
+            {
+              id: 'next',
+              label: '',
+              variant: 'ghost',
+              icon: <IconChevronRight width={16} height={16} />,
+              onAction: () => setCursor(addMonths(cursor, 1)),
+            },
+            {
+              id: 'new-event',
+              label: '+ NEW EVENT',
+              variant: 'primary',
+              icon: <IconPlus width={14} height={14} />,
+              onAction: () => setIsCreateModalOpen(true),
+              primary: true,
+            },
+          ]}
+        />
+      )}
 
       {/* Main Calendar Body Grid (Sidebar + Calendar Workspace) */}
       <div style={{ padding: '0 24px 24px 24px', display: 'grid', gridTemplateColumns: '240px minmax(0, 1fr)', gap: 20, flex: '1 1 auto' }}>
@@ -404,7 +394,7 @@ export default function CalendarPage() {
           event={selectedEvent}
           calendar={calendars.find((c) => c.id === selectedEvent.calendarId)}
           onClose={() => setSelectedEvent(null)}
-          onDelete={() => void handleDeleteEvent(selectedEvent.id)}
+          onDelete={() => void handleDelete(selectedEvent.id)}
         />
       )}
 

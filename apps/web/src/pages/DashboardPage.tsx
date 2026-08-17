@@ -16,6 +16,7 @@ import { ContextStreams } from '@/components/dashboard/ContextStreams';
 import { ActionFloatingBar } from '@/components/dashboard/ActionFloatingBar';
 import { MorphingDetailModal } from '@/components/dashboard/MorphingDetailModal';
 import { ContextDrawerModal, type ContextSourceType } from '@/components/dashboard/ContextDrawerModal';
+import { IconBot, IconCheckCircle, IconX } from '@/lib/icons.js';
 import type { Task } from '@/lib/services/tasks.contract.js';
 import type { Note } from '@/lib/services/notes.contract.js';
 import type { Agent, AgentRun } from '@/lib/services/agents.contract.js';
@@ -44,6 +45,7 @@ export default function DashboardPage() {
 
   const [inspectItem, setInspectItem] = useState<AgentRun | Task | null>(null);
   const [contextSource, setContextSource] = useState<ContextSourceType>(null);
+  const [executionDrawerOpen, setExecutionDrawerOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -143,7 +145,7 @@ export default function DashboardPage() {
         minHeight: '100%',
         background: '#000000',
         color: '#ffcc66',
-        fontFamily: '"Courier New", monospace, sans-serif',
+        fontFamily: 'var(--font-sans)',
         padding: '28px 36px 90px 36px',
         position: 'relative',
       }}
@@ -160,19 +162,17 @@ export default function DashboardPage() {
         <DynamicIsland
           activeRun={activeRun}
           progress={64}
-          onInspect={(r) => setInspectItem(r)}
-          onApprove={(r) => {
-            setInspectItem(r);
-          }}
+          onInspect={() => setExecutionDrawerOpen(true)}
+          onApprove={() => setExecutionDrawerOpen(true)}
         />
 
         {/* Operational Context Title & Mode Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 170, 48, 0.25)', paddingBottom: 14 }}>
           <div>
-            <div style={{ fontSize: 10, letterSpacing: '0.25em', color: '#885522', marginBottom: 2 }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.25em', color: '#885522', marginBottom: 2, fontFamily: 'var(--font-mono)' }}>
               {wsName.toUpperCase()} // OPERATIONAL ENVIRONMENT ({mode.toUpperCase()})
             </div>
-            <div style={{ fontSize: 18, fontWeight: 'bold', letterSpacing: '0.12em', color: '#ffaa30', textShadow: '0 0 8px rgba(255, 170, 48, 0.6)' }}>
+            <div style={{ fontSize: 20, fontWeight: 'bold', letterSpacing: '0.02em', color: '#ffaa30', textShadow: '0 0 8px rgba(255, 170, 48, 0.6)', fontFamily: 'var(--font-sans)' }}>
               Good evening, {user?.displayName ?? user?.name ?? 'Operator'}.
             </div>
           </div>
@@ -215,7 +215,7 @@ export default function DashboardPage() {
             todayTasks={todayTasks.length > 0 ? todayTasks : tasks}
             events={events}
             notes={notes}
-            onSelectRun={(r) => setInspectItem(r)}
+            onSelectRun={() => setExecutionDrawerOpen(true)}
             onSelectTask={(t) => setInspectItem(t)}
             onSelectContextSource={(source) => setContextSource(source)}
             onApproveProposedAction={(title) => {
@@ -226,6 +226,14 @@ export default function DashboardPage() {
             }}
           />
         </div>
+      )}
+
+      {/* Active Agent Execution Drawer */}
+      {executionDrawerOpen && (
+        <AgentExecutionDrawer
+          run={activeRun}
+          onClose={() => setExecutionDrawerOpen(false)}
+        />
       )}
 
       {/* Context Source Inspection Drawer */}
@@ -252,6 +260,121 @@ export default function DashboardPage() {
         onQuickNote={handleQuickNote}
         onQuickAgent={() => navigate('/agents')}
       />
+    </div>
+  );
+}
+
+function AgentExecutionDrawer({
+  run,
+  onClose,
+}: {
+  readonly run: AgentRun | null;
+  readonly onClose: () => void;
+}) {
+  return (
+    <div className="task-detail-drawer" style={{ color: '#ffcc66', fontFamily: 'var(--font-sans)' }}>
+      {/* Header */}
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.95)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>
+          <IconBot width={14} height={14} />
+          <span>PLANNER // RUNNING</span>
+        </div>
+        <button type="button" onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#885522', cursor: 'pointer' }}>
+          <IconX width={16} height={16} />
+        </button>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: '20px', flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div>
+          <div style={{ fontSize: 10, letterSpacing: '0.12em', color: '#885522', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>
+            OBJECTIVE
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 'bold', color: '#ffcc66', lineHeight: 1.4 }}>
+            {run?.taskTitle ?? 'Break down Q3 goals into milestones'}
+          </div>
+        </div>
+
+        {/* Observable Activity Trace Steps */}
+        <div>
+          <div style={{ fontSize: 10, letterSpacing: '0.12em', color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)', marginBottom: 10 }}>
+            OBSERVABLE EXECUTION STEPS
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontFamily: 'var(--font-mono)', fontSize: 11 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#34d399' }}>
+              <IconCheckCircle width={14} height={14} />
+              <span>Understand objective &amp; workspace constraints</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#34d399' }}>
+              <IconCheckCircle width={14} height={14} />
+              <span>Analyze existing tasks &amp; dependency graph</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ffaa30' }}>
+              <span className="island-pulse-orb" style={{ width: 6, height: 6 }} />
+              <span>Generate milestone timeline &amp; estimates</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#885522' }}>
+              <span>○</span>
+              <span>Prepare final execution plan for operator review</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Bar & Telemetry */}
+        <div style={{ background: 'rgba(20, 10, 2, 0.7)', border: '1px solid rgba(255, 170, 48, 0.2)', borderRadius: 6, padding: '14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, fontFamily: 'var(--font-mono)' }}>
+            <span style={{ color: '#885522' }}>PROGRESS</span>
+            <span style={{ color: '#ffaa30', fontWeight: 'bold' }}>64%</span>
+          </div>
+          <div style={{ width: '100%', height: 6, background: 'rgba(255, 170, 48, 0.15)', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{ width: '64%', height: '100%', background: '#ffaa30' }} />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#885522', fontFamily: 'var(--font-mono)' }}>
+            <span>Started 18m ago</span>
+            <span>Est. 12m left</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Controls */}
+      <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', gap: 10, background: 'rgba(14, 7, 1, 0.95)' }}>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            flex: 1,
+            background: 'rgba(255, 170, 48, 0.15)',
+            border: '1px solid rgba(255, 170, 48, 0.4)',
+            borderRadius: 4,
+            color: '#ffcc66',
+            padding: '8px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            fontWeight: 'bold',
+            cursor: 'pointer',
+          }}
+        >
+          PAUSE RUN
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            flex: 1,
+            background: '#ffaa30',
+            border: 'none',
+            borderRadius: 4,
+            color: '#000000',
+            padding: '8px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            fontWeight: 'bold',
+            cursor: 'pointer',
+          }}
+        >
+          [ ASK SYNTROPHOS ]
+        </button>
+      </div>
     </div>
   );
 }
