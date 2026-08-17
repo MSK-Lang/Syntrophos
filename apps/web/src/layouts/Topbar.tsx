@@ -165,7 +165,7 @@ export function Topbar({
             <span>Search or ask Syntrophos... (tasks, notes, chats, calendar, agents…)</span>
           </div>
           <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', background: 'rgba(255, 170, 48, 0.15)', border: '1px solid rgba(255, 170, 48, 0.3)', padding: '1px 6px', borderRadius: 4, color: '#ffcc66' }}>
-            ⌘K
+            {typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘ K' : 'Ctrl K'}
           </span>
         </button>
       </div>

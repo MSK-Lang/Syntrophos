@@ -15,6 +15,7 @@ import {
   IconWorkflow,
   IconFolder,
   IconGraph,
+  IconCheckCircle,
   type IconComponent,
 } from '@/lib/icons.js';
 
@@ -43,6 +44,7 @@ const MODULE_NAV: readonly NavItem[] = [
 ];
 
 const UTILITY_NAV: readonly NavItem[] = [
+  { id: 'help', label: 'Help & Guide', to: '/help', Icon: IconCheckCircle },
   { id: 'settings', label: 'Settings', to: '/settings', Icon: IconSettings },
 ];
 

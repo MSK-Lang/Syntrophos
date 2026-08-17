@@ -15,40 +15,29 @@ export type SyntrophosLoadingProps = {
 
 export function SyntrophosLoading({
   variant = 'workspace',
-  label = 'INITIALIZING SYSTEM',
-  statusMessage = 'SYNCHRONIZING WORKSPACE NODES',
+  label = 'INITIALIZING',
+  statusMessage,
   progress,
   error,
   onRetry,
   isReady = false,
   onRevealed,
 }: SyntrophosLoadingProps) {
-  const [internalProgress, setInternalProgress] = useState(progress ?? 24);
+  const [internalProgress, setInternalProgress] = useState(progress ?? 0);
   const [revealing, setRevealing] = useState(false);
 
   useEffect(() => {
     if (progress !== undefined) {
       setInternalProgress(progress);
-      return;
     }
-    const interval = setInterval(() => {
-      setInternalProgress((prev) => {
-        if (prev >= 94) return 94;
-        return prev + Math.floor(Math.random() * 8) + 2;
-      });
-    }, 180);
-    return () => clearInterval(interval);
   }, [progress]);
 
   useEffect(() => {
     if (isReady) {
       setInternalProgress(100);
+      setRevealing(true);
       const timer = setTimeout(() => {
-        setRevealing(true);
-        const revealTimer = setTimeout(() => {
-          onRevealed?.();
-        }, 300);
-        return () => clearTimeout(revealTimer);
+        onRevealed?.();
       }, 250);
       return () => clearTimeout(timer);
     }
@@ -66,6 +55,8 @@ export function SyntrophosLoading({
       </div>
     );
   }
+
+  const isExplicitProgress = progress !== undefined;
 
   const content = (
     <div
@@ -122,7 +113,10 @@ export function SyntrophosLoading({
       </svg>
 
       {/* Brand Title */}
-      <div className="loader-brand-title">SYNTHROPHOS // {label}</div>
+      <div className="loader-brand-title">SYNTHROPHOS CORE</div>
+      <div style={{ fontSize: 11, color: '#ffcc66', fontFamily: 'var(--font-mono)', marginTop: 4, letterSpacing: '0.14em' }}>
+        {label}
+      </div>
 
       {/* Status Message */}
       {error ? (
@@ -153,19 +147,19 @@ export function SyntrophosLoading({
         </div>
       ) : isReady ? (
         <div style={{ color: '#34d399', fontSize: 13, fontWeight: 600, fontFamily: 'monospace', marginTop: 10 }}>
-          SYSTEM READY
+          READY
         </div>
       ) : (
         <>
-          <div className="loader-status-msg">{statusMessage}</div>
+          {statusMessage && <div className="loader-status-msg">{statusMessage}</div>}
 
-          {/* Progress Bar & Readout */}
-          <div className="loader-progress-track">
-            <div className="loader-progress-bar" style={{ width: `${internalProgress}%` }} />
-          </div>
-
-          <div className="loader-sub-telemetry">
-            LATENCY 14MS · {internalProgress}% LOADED
+          {/* Progress Bar Track */}
+          <div className={`loader-progress-track ${!isExplicitProgress ? 'loader-progress-track--indeterminate' : ''}`}>
+            {isExplicitProgress ? (
+              <div className="loader-progress-bar" style={{ width: `${internalProgress}%` }} />
+            ) : (
+              <div className="loader-progress-bar--indeterminate" />
+            )}
           </div>
         </>
       )}

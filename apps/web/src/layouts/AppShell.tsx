@@ -19,9 +19,9 @@ export function AppShell({ children }: { readonly children: ReactNode }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
-      if (mod && e.key.toLowerCase() === 'k') {
+      if (mod && (e.key.toLowerCase() === 'k' || e.key === '/')) {
         e.preventDefault();
-        setSearchOpen((v) => !v);
+        setCmdOpen((v) => !v);
       } else if (mod && e.shiftKey && e.key.toLowerCase() === 'p') {
         e.preventDefault();
         setCmdOpen((v) => !v);
@@ -59,7 +59,7 @@ export function AppShell({ children }: { readonly children: ReactNode }) {
         }}
         onOpenNotifications={() => setNotifOpen((v) => !v)}
         onOpenCommandPalette={() => setCmdOpen(true)}
-        onOpenSearch={() => setSearchOpen(true)}
+        onOpenSearch={() => setCmdOpen(true)}
         onOpenVoice={() => (window.location.href = '/voice')}
         onToggleAgentRail={() => setRailOpen((v) => !v)}
         agentRailOpen={railOpen}

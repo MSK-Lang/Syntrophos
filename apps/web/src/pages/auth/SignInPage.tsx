@@ -1,157 +1,224 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Badge, Button, Card, CardBody, Input, Label, Separator, Toggle } from '@/components/ui/primitives.js';
-import { ErrorState } from '@/components/ui/states.js';
-import { IconChat, IconLogo, IconProviders, IconWorkspace } from '@/lib/icons.jsx';
-import { useAuth } from '@/lib/services/index.js';
+import { Button, Input, Label } from '@/components/ui/primitives.js';
+import { IconGoogle, IconGithub, IconEye, IconEyeOff } from '@/lib/icons.js';
+
+import { setFirstTimeUser } from '@/lib/services/onboarding';
 
 export default function SignInPage() {
-  const { signIn, getCurrentSession } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    void (async () => {
-      try {
-        const session = await getCurrentSession();
-        if (session) navigate('/', { replace: true });
-      } catch {
-        /* ignore */
-      }
-    })();
-  }, [getCurrentSession, navigate]);
-
-  const submit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      await signIn({ email, password, rememberMe: remember });
-      navigate('/', { replace: true });
-    } catch (err) {
-      setError((err as Error).message ?? 'Sign in failed');
-    } finally {
-      setLoading(false);
-    }
+    setFirstTimeUser(false);
+    navigate('/core', { replace: true });
+  };
+
+  const handleOAuth = () => {
+    setFirstTimeUser(false);
+    navigate('/core', { replace: true });
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', minHeight: '100vh', background: 'var(--color-background)' }}>
+    <div style={{ minHeight: '100vh', width: '100%', display: 'grid', gridTemplateColumns: '1.1fr 1.2fr', background: '#040201', color: '#fff5e6', fontFamily: 'var(--font-sans)' }}>
+      {/* LEFT COLUMN: EDITORIAL BRAND IDENT } */}
       <div
         style={{
-          background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-primary-500) 15%, transparent) 0%, color-mix(in srgb, var(--color-accent-violet) 12%, transparent) 60%, color-mix(in srgb, var(--color-accent-teal) 10%, transparent) 100%)',
-          padding: 'var(--space-8)',
+          padding: '60px 56px',
+          background: 'linear-gradient(135deg, rgba(14, 7, 1, 0.95) 0%, rgba(6, 3, 1, 0.98) 100%)',
+          borderRight: '1px solid rgba(255, 170, 48, 0.15)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          borderRight: '1px solid var(--color-border)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div
-            aria-hidden="true"
-            style={{
-              width: 40, height: 40, borderRadius: 'var(--radius-lg)',
-              background: 'linear-gradient(135deg, var(--color-primary-500), var(--color-accent-violet))',
-              color: 'white',
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: 'var(--shadow-md)',
-            }}
-          >
-            <IconLogo width={22} height={22} />
-          </div>
-          <div>
-            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.01em' }}>Syntrophos</div>
-            <div style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Think together, remember forever</div>
-          </div>
-        </div>
+        {/* Logo Header */}
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', width: 'fit-content' }}>
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ffaa30', boxShadow: '0 0 10px rgba(255, 170, 48, 0.8)' }} />
+          <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: '0.12em', color: '#fff5e6', fontFamily: 'var(--font-mono)' }}>
+            SYNTHROPHOS
+          </span>
+        </Link>
 
-        <div style={{ maxWidth: 420 }}>
-          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1, margin: '0 0 var(--space-4)' }}>
-            A personal AI that thinks with you.
-          </h2>
-          <p style={{ fontSize: 15, color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0 }}>
-            Syntrophos combines multi-agent workflows, Obsidian-grade memory, and voice-first interactions into one calm, thoughtful workspace.
+        {/* Narrative & Visual Concept */}
+        <div style={{ maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div style={{ fontSize: 11, color: '#ffaa30', fontWeight: 'bold', letterSpacing: '0.16em', fontFamily: 'var(--font-mono)' }}>
+            INTELLIGENT WORKSPACE
+          </div>
+
+          <h1 style={{ fontSize: 44, fontWeight: 800, color: '#fff5e6', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+            THE AI OPERATING SYSTEM FOR YOUR WORK.
+          </h1>
+
+          <p style={{ fontSize: 16, color: '#d99a4e', lineHeight: 1.6, margin: 0 }}>
+            Bring your conversations, tasks, projects, schedule, knowledge, agents, and workflows into one connected environment.
           </p>
-          <div style={{ marginTop: 'var(--space-6)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)' }}>
-            <Feature icon={<IconChat width={16} height={16} />} label="Chat &amp; Reason" tone="primary" />
-            <Feature icon={<IconProviders width={16} height={16} />} label="Multi-model" tone="violet" />
-            <Feature icon={<IconWorkspace width={16} height={16} />} label="Workspaces" tone="teal" />
+
+          <div style={{ display: 'flex', gap: 20, paddingTop: 16, borderTop: '1px solid rgba(255, 170, 48, 0.15)', fontSize: 11, color: '#885522', fontFamily: 'var(--font-mono)' }}>
+            <span>CONTEXT</span>
+            <span style={{ color: '#ffaa30' }}>·</span>
+            <span>INTELLIGENCE</span>
+            <span style={{ color: '#ffaa30' }}>·</span>
+            <span>ACTION</span>
           </div>
         </div>
 
-        <div style={{ fontSize: 11, color: 'var(--color-text-subtle)', fontFamily: 'var(--font-mono)' }}>
-          v0.1.0 · Your data stays yours, first.
+        {/* System Telemetry Metadata */}
+        <div style={{ fontSize: 11, color: '#885522', fontFamily: 'var(--font-mono)' }}>
+          SYNTHROPHOS OS // v0.1.0 · LOCAL CONTEXT MATRIX
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-8)' }}>
-        <Card tone="default" style={{ width: '100%', maxWidth: 440 }}>
-          <CardBody style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
-            <div>
-              <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 var(--space-2)', letterSpacing: '-0.01em' }}>Welcome back</h1>
-              <p style={{ fontSize: 14, color: 'var(--color-text-muted)', margin: 0 }}>Sign in to pick up exactly where you left off.</p>
+      {/* RIGHT COLUMN: AUTHENTICATION FORM */}
+      <div style={{ padding: '60px 64px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 28 }}>
+          {/* Header */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ fontSize: 11, color: '#ffaa30', fontWeight: 'bold', letterSpacing: '0.14em', fontFamily: 'var(--font-mono)' }}>
+              WELCOME BACK
+            </div>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: '#fff5e6', letterSpacing: '-0.01em', margin: 0 }}>
+              Welcome back.
+            </h2>
+            <p style={{ fontSize: 14, color: '#d99a4e', margin: 0 }}>
+              Continue to your Syntrophos workspace.
+            </p>
+          </div>
+
+          {/* OAuth Buttons */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <button
+              type="button"
+              onClick={handleOAuth}
+              className="public-btn-tactile"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                background: 'rgba(16, 8, 2, 0.8)',
+                border: '1px solid rgba(255, 170, 48, 0.25)',
+                borderRadius: 6,
+                color: '#fff5e6',
+                fontSize: 13,
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                cursor: 'pointer',
+              }}
+            >
+              <IconGoogle width={18} height={18} />
+              Continue with Google
+            </button>
+
+            <button
+              type="button"
+              onClick={handleOAuth}
+              className="public-btn-tactile"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                background: 'rgba(16, 8, 2, 0.8)',
+                border: '1px solid rgba(255, 170, 48, 0.25)',
+                borderRadius: 6,
+                color: '#fff5e6',
+                fontSize: 13,
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                cursor: 'pointer',
+              }}
+            >
+              <IconGithub width={18} height={18} />
+              Continue with GitHub
+            </button>
+          </div>
+
+          {/* Separator */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255, 170, 48, 0.15)' }} />
+            <span style={{ fontSize: 10, color: '#885522', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
+              OR CONTINUE WITH EMAIL
+            </span>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255, 170, 48, 0.15)' }} />
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Label htmlFor="email" style={{ fontSize: 12, color: '#ffcc66', fontWeight: 600 }}>Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{ background: 'rgba(16, 8, 2, 0.8)', borderColor: 'rgba(255, 170, 48, 0.25)', color: '#fff5e6', padding: '10px 14px' }}
+              />
             </div>
 
-            <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-              {error && <ErrorState title="Sign in failed" error={error} size="sm" />}
-              <div>
-                <Label htmlFor="email" required>Email</Label>
-                <Input id="email" type="email" autoComplete="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Label htmlFor="password" style={{ fontSize: 12, color: '#ffcc66', fontWeight: 600 }}>Password</Label>
+                <Link to="/sign-in" style={{ fontSize: 11, color: '#d99a4e', textDecoration: 'none' }}>Forgot password?</Link>
               </div>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-                  <Label htmlFor="password" required>Password</Label>
-                  <Link to="/sign-in/reset" style={{ fontSize: 12, textDecoration: 'none' }}>Forgot?</Link>
-                </div>
-                <Input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-              <div className="inline-stack-sm">
-                <Toggle checked={remember} onChange={(e) => setRemember(e.target.checked)} label="Remember me" description="Stay signed in on this device" />
-              </div>
-              <Button variant="primary" type="submit" loading={loading}>Sign in</Button>
-            </form>
-
-            <Separator />
-
-            <div>
-              <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, color: 'var(--color-text-subtle)', textAlign: 'center', marginBottom: 'var(--space-3)' }}>
-                Or continue with
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-2)' }}>
-                <Button variant="secondary" size="md">Google</Button>
-                <Button variant="secondary" size="md">GitHub</Button>
-                <Button variant="secondary" size="md">Apple</Button>
+              <div style={{ position: 'relative' }}>
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ background: 'rgba(16, 8, 2, 0.8)', borderColor: 'rgba(255, 170, 48, 0.25)', color: '#fff5e6', padding: '10px 40px 10px 14px', width: '100%' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#885522', cursor: 'pointer', padding: 4 }}
+                >
+                  {showPassword ? <IconEyeOff width={16} height={16} /> : <IconEye width={16} height={16} />}
+                </button>
               </div>
             </div>
 
-            <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--color-text-muted)' }}>
-              Don't have an account?&nbsp;
-              <Link to="/sign-up" style={{ textDecoration: 'none' }}>Create one</Link>
-            </div>
-          </CardBody>
-        </Card>
+            {/* Checkbox */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, color: '#d99a4e', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                style={{ accentColor: '#ffaa30', width: 15, height: 15 }}
+              />
+              <span>Remember me on this device</span>
+            </label>
+
+            {/* Submit CTA */}
+            <Button
+              variant="primary"
+              type="submit"
+              className="public-btn-tactile"
+              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 'bold', padding: '12px 20px', borderRadius: 4, marginTop: 6 }}
+            >
+              [ LOG IN ]
+            </Button>
+          </form>
+
+          {/* Navigation Footer */}
+          <div style={{ textAlign: 'center', fontSize: 13, color: '#d99a4e' }}>
+            Don’t have an account?&nbsp;
+            <Link to="/sign-up" style={{ color: '#ffcc66', textDecoration: 'none', fontWeight: 'bold' }}>Create one</Link>
+          </div>
+        </div>
       </div>
-    </div>
-  );
-}
-
-function Feature({ icon, label, tone }: { readonly icon: React.ReactNode; readonly label: string; readonly tone: 'primary' | 'violet' | 'teal' }) {
-  const map = {
-    primary: 'var(--color-primary-500)',
-    violet: 'var(--color-accent-violet)',
-    teal: 'var(--color-accent-teal)',
-  } as const;
-  return (
-    <div style={{ padding: 'var(--space-3)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', background: 'var(--color-surface)' }}>
-      <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-sm)', color: 'white', background: map[tone], display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--space-2)' }}>
-        {icon}
-      </div>
-      <div style={{ fontSize: 12, fontWeight: 600 }}>{label}</div>
     </div>
   );
 }

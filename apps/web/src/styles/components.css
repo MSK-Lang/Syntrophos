@@ -1191,6 +1191,103 @@
   border-color: rgba(255, 170, 48, 0.4);
 }
 
+/* =============================================================================
+ *  PUBLIC SITE MICRO-INTERACTIONS & TRANSITIONS
+ * ========================================================================== */
+
+.public-nav-link {
+  color: #d99a4e;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 180ms ease, transform 180ms ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.public-nav-link:hover {
+  color: #ffcc66;
+  transform: translateY(-1px);
+}
+
+.public-nav-link:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.public-nav-link:focus-visible {
+  outline: 2px solid #ffaa30;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.public-btn-tactile {
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 180ms ease, border-color 180ms ease;
+  cursor: pointer;
+}
+
+.public-btn-tactile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 170, 48, 0.25);
+}
+
+.public-btn-tactile:active {
+  transform: translateY(0px) scale(0.97);
+  box-shadow: 0 2px 8px rgba(255, 170, 48, 0.15);
+}
+
+.public-btn-tactile:focus-visible {
+  outline: 2px solid #ffaa30;
+  outline-offset: 4px;
+}
+
+.public-interactive-card {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  cursor: pointer;
+}
+
+.public-interactive-card:hover {
+  transform: translateY(-3px);
+  background-color: rgba(22, 11, 2, 0.95) !important;
+  border-color: rgba(255, 170, 48, 0.45) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 170, 48, 0.1);
+}
+
+.public-interactive-card:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.public-interactive-card:focus-visible {
+  outline: 2px solid #ffaa30;
+  outline-offset: 4px;
+}
+
+.public-page-fade {
+  animation: publicPageFadeIn 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes publicPageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-nav-link,
+  .public-btn-tactile,
+  .public-interactive-card,
+  .public-page-fade {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+
 
 
 

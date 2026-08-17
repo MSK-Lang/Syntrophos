@@ -19,6 +19,10 @@ import {
   IconTasks,
   IconWorkspace,
   IconX,
+  IconMail,
+  IconFolder,
+  IconGraph,
+  IconCheckCircle,
 } from '@/lib/icons.jsx';
 import {
   Avatar,
@@ -190,6 +194,7 @@ type Command = {
   readonly hint?: string;
   readonly icon: ReactNode;
   readonly shortcut?: string;
+  readonly tag?: string;
   readonly run: () => void;
 };
 
@@ -205,31 +210,67 @@ export function CommandPalette({
   const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const commands = useMemo<Command[]>(() => {
-    return [
-      { id: 'nav-home', group: 'Navigate', title: 'Go to Dashboard', icon: <IconDashboard width={16} height={16} />, shortcut: 'G H', run: () => navigate('/') },
-      { id: 'nav-chat', group: 'Navigate', title: 'Go to Chat', hint: 'Open AI chat workspace', icon: <IconChat width={16} height={16} />, shortcut: 'G C', run: () => navigate('/chat') },
-      { id: 'nav-notes', group: 'Navigate', title: 'Go to Notes', icon: <IconNotes width={16} height={16} />, shortcut: 'G N', run: () => navigate('/notes') },
-      { id: 'nav-tasks', group: 'Navigate', title: 'Go to Tasks', icon: <IconTasks width={16} height={16} />, shortcut: 'G T', run: () => navigate('/tasks') },
-      { id: 'nav-calendar', group: 'Navigate', title: 'Go to Calendar', icon: <IconCalendar width={16} height={16} />, run: () => navigate('/calendar') },
-      { id: 'nav-agents', group: 'Navigate', title: 'Go to Agents', icon: <IconBot width={16} height={16} />, run: () => navigate('/agents') },
-      { id: 'nav-integrations', group: 'Navigate', title: 'Go to Integrations', icon: <IconIntegration width={16} height={16} />, run: () => navigate('/integrations') },
-      { id: 'nav-plugins', group: 'Navigate', title: 'Go to Plugins', icon: <IconPlugin width={16} height={16} />, run: () => navigate('/plugins') },
-      { id: 'nav-providers', group: 'Navigate', title: 'Manage AI Providers', icon: <IconProviders width={16} height={16} />, run: () => navigate('/settings/providers') },
-      { id: 'nav-workspaces', group: 'Navigate', title: 'Manage Workspaces', icon: <IconWorkspace width={16} height={16} />, run: () => navigate('/workspaces') },
-      { id: 'nav-settings', group: 'Navigate', title: 'Open Settings', icon: <IconSettings width={16} height={16} />, shortcut: ',', run: () => navigate('/settings') },
-      { id: 'nav-starred', group: 'Navigate', title: 'Go to Starred', icon: <IconStar width={16} height={16} />, run: () => navigate('/starred') },
-      { id: 'action-new-chat', group: 'Actions', title: 'Start new conversation', icon: <IconChat width={16} height={16} />, run: () => navigate('/chat/new') },
-      { id: 'action-new-note', group: 'Actions', title: 'Create new note', icon: <IconNotes width={16} height={16} />, shortcut: 'N', run: () => navigate('/notes/new') },
-      { id: 'action-new-task', group: 'Actions', title: 'Create new task', icon: <IconTasks width={16} height={16} />, shortcut: 'T', run: () => navigate('/tasks?new=1') },
-    ];
-  }, [navigate]);
+  const isMac = typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  const kbdShortcut = isMac ? '⌘ K' : 'Ctrl K';
+
+  // Base Commands (Empty Query View)
+  const defaultCommands = useMemo<Command[]>(() => [
+    // ASK
+    {
+      id: 'ask-syntrophos',
+      group: 'ASK',
+      title: 'Ask Syntrophos',
+      hint: 'Ask about your workspace, tasks, notes, or knowledge graph',
+      icon: <IconBot width={16} height={16} style={{ color: '#ffaa30' }} />,
+      shortcut: '↵',
+      run: () => navigate('/chat/new'),
+    },
+    // GO TO
+    { id: 'go-dashboard', group: 'GO TO', title: 'Dashboard', icon: <IconDashboard width={16} height={16} />, run: () => navigate('/dashboard') },
+    { id: 'go-inbox', group: 'GO TO', title: 'Inbox', icon: <IconMail width={16} height={16} />, run: () => navigate('/inbox') },
+    { id: 'go-tasks', group: 'GO TO', title: 'Tasks', icon: <IconTasks width={16} height={16} />, run: () => navigate('/tasks') },
+    { id: 'go-projects', group: 'GO TO', title: 'Projects', icon: <IconFolder width={16} height={16} />, run: () => navigate('/projects') },
+    { id: 'go-calendar', group: 'GO TO', title: 'People & Schedule', icon: <IconCalendar width={16} height={16} />, run: () => navigate('/calendar') },
+    { id: 'go-intelligence', group: 'GO TO', title: 'Intelligence', icon: <IconBot width={16} height={16} />, run: () => navigate('/intelligence') },
+    { id: 'go-knowledge', group: 'GO TO', title: 'Knowledge', icon: <IconGraph width={16} height={16} />, run: () => navigate('/knowledge') },
+    { id: 'go-settings', group: 'GO TO', title: 'Settings', icon: <IconSettings width={16} height={16} />, run: () => navigate('/settings') },
+    { id: 'go-help', group: 'GO TO', title: 'Help & Guide', icon: <IconCheckCircle width={16} height={16} />, run: () => navigate('/help') },
+
+    // CREATE
+    { id: 'create-task', group: 'CREATE', title: 'New task', hint: 'Create a new action item', icon: <IconTasks width={16} height={16} />, shortcut: 'T', run: () => navigate('/tasks?new=1') },
+    { id: 'create-note', group: 'CREATE', title: 'New note', hint: 'Create a new markdown note', icon: <IconNotes width={16} height={16} />, shortcut: 'N', run: () => navigate('/notes/new') },
+    { id: 'create-project', group: 'CREATE', title: 'New project', hint: 'Create a new project workspace', icon: <IconFolder width={16} height={16} />, run: () => navigate('/projects?new=1') },
+    { id: 'create-workflow', group: 'CREATE', title: 'New workflow', hint: 'Create an automated workflow', icon: <IconBot width={16} height={16} />, run: () => navigate('/workflows?new=1') },
+
+    // RECENT
+    { id: 'recent-project', group: 'RECENT', title: 'Syntrophos Launch', hint: 'Project · 12 tasks active', icon: <IconFolder width={16} height={16} />, tag: 'PROJECT', run: () => navigate('/projects') },
+    { id: 'recent-person', group: 'RECENT', title: 'Sarah Chen', hint: 'Person · Helio Labs Architect', icon: <IconCalendar width={16} height={16} />, tag: 'PERSON', run: () => navigate('/calendar') },
+    { id: 'recent-task', group: 'RECENT', title: 'Today’s Tasks', hint: 'Task · 5 active tasks', icon: <IconTasks width={16} height={16} />, tag: 'TASK', run: () => navigate('/tasks') },
+    { id: 'recent-agent', group: 'RECENT', title: 'Planner Agent', hint: 'Agent · Intelligence System', icon: <IconBot width={16} height={16} />, tag: 'AGENT', run: () => navigate('/intelligence') },
+  ], [navigate]);
+
+  // Extended Search Items (When Query Exists)
+  const searchDatabase = useMemo<Command[]>(() => [
+    ...defaultCommands,
+    { id: 'search-task-1', group: 'SEARCH RESULTS', title: 'Prepare launch presentation', hint: 'Due today · High priority', icon: <IconTasks width={16} height={16} />, tag: 'TASK', run: () => navigate('/tasks') },
+    { id: 'search-task-2', group: 'SEARCH RESULTS', title: 'Design 3D spatial orb shaders', hint: 'Completed · Core Engine', icon: <IconTasks width={16} height={16} />, tag: 'TASK', run: () => navigate('/tasks') },
+    { id: 'search-note-1', group: 'SEARCH RESULTS', title: 'Q3 Product Architecture.md', hint: 'Knowledge base architecture doc', icon: <IconNotes width={16} height={16} />, tag: 'NOTE', run: () => navigate('/notes') },
+    { id: 'search-note-2', group: 'SEARCH RESULTS', title: 'Weekly Core Engine Review.md', hint: 'Team notes · 2 days ago', icon: <IconNotes width={16} height={16} />, tag: 'NOTE', run: () => navigate('/notes') },
+    { id: 'search-agent-1', group: 'SEARCH RESULTS', title: 'Researcher Agent', hint: 'Retrieval & synthesis specialist', icon: <IconBot width={16} height={16} />, tag: 'AGENT', run: () => navigate('/intelligence') },
+    { id: 'search-workflow-1', group: 'SEARCH RESULTS', title: 'Automated Client Onboarding', hint: 'Active workflow · 4 steps', icon: <IconBot width={16} height={16} />, tag: 'WORKFLOW', run: () => navigate('/workflows') },
+    { id: 'search-knowledge-1', group: 'SEARCH RESULTS', title: 'Provenance Telemetry Vault', hint: 'Knowledge graph source data', icon: <IconGraph width={16} height={16} />, tag: 'KNOWLEDGE', run: () => navigate('/knowledge') },
+  ], [defaultCommands, navigate]);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return commands;
-    const q = query.toLowerCase();
-    return commands.filter((c) => c.title.toLowerCase().includes(q) || c.group.toLowerCase().includes(q));
-  }, [commands, query]);
+    if (!query.trim()) return defaultCommands;
+    const q = query.toLowerCase().trim();
+    return searchDatabase.filter((c) =>
+      c.title.toLowerCase().includes(q) ||
+      c.group.toLowerCase().includes(q) ||
+      (c.hint && c.hint.toLowerCase().includes(q)) ||
+      (c.tag && c.tag.toLowerCase().includes(q))
+    );
+  }, [defaultCommands, searchDatabase, query]);
 
   useEffect(() => {
     setActiveIdx(0);
@@ -256,61 +297,124 @@ export function CommandPalette({
     }
   };
 
-  const groups = filtered.reduce<Record<string, Command[]>>((acc, cur) => {
-    (acc[cur.group] = acc[cur.group] ?? []).push(cur);
-    return acc;
-  }, {});
+  // Group items by category preserves ASK, GO TO, CREATE, RECENT order
+  const groupOrder = ['ASK', 'GO TO', 'CREATE', 'RECENT', 'SEARCH RESULTS'];
+  const grouped = groupOrder.map((g) => ({
+    group: g,
+    items: filtered.filter((item) => item.group === g),
+  })).filter((g) => g.items.length > 0);
 
   return (
     <>
-      <div className="panel-scrim" onClick={onClose} />
-      <div className="panel panel--command" role="dialog" aria-modal="true" aria-label="Command palette">
-        <div className="cmd-input-wrap">
-          <IconSearch width={18} height={18} style={{ color: 'var(--color-text-muted)' }} />
+      <div className="panel-scrim" onClick={onClose} style={{ zIndex: 120 }} />
+      <div
+        className="panel panel--command"
+        style={{ zIndex: 121, maxWidth: 640, width: '92vw' }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+      >
+        {/* INPUT HEADER */}
+        <div className="cmd-input-wrap" style={{ padding: '14px 18px', borderBottom: '1px solid rgba(255, 170, 48, 0.2)' }}>
+          <IconSearch width={18} height={18} style={{ color: '#ffaa30' }} />
           <input
             ref={inputRef}
             className="cmd-input"
-            placeholder="Type a command or search…"
+            placeholder="Search Syntrophos..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKey}
-            aria-label="Search commands"
+            aria-label="Search or ask Syntrophos"
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
+            style={{ fontSize: 14, color: '#fff5e6' }}
           />
-          <IconCommand width={16} height={16} style={{ color: 'var(--color-text-subtle)' }} />
+          <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', background: 'rgba(255, 170, 48, 0.15)', border: '1px solid rgba(255, 170, 48, 0.3)', padding: '2px 6px', borderRadius: 4, color: '#ffcc66' }}>
+            {kbdShortcut}
+          </span>
         </div>
 
-        <div className="panel__body" style={{ padding: 0 }}>
+        {/* RESULTS BODY */}
+        <div className="panel__body" style={{ padding: '12px 16px', maxHeight: 440, overflowY: 'auto' }}>
           {filtered.length === 0 ? (
-            <div style={{ padding: 'var(--space-8)' }}>
-              <EmptySearch query={query} onClear={() => setQuery('')} />
+            <div style={{ padding: '36px 20px', textAlign: 'center', color: '#d99a4e', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+              <div style={{ fontSize: 14, fontWeight: 'bold', color: '#fff5e6' }}>NO RESULTS FOUND</div>
+              <div style={{ fontSize: 13, color: '#885522' }}>Try another search query or ask Syntrophos directly.</div>
+              <button
+                type="button"
+                onClick={() => { navigate('/chat/new'); onClose(); }}
+                className="public-btn-tactile"
+                style={{ marginTop: 8, padding: '8px 16px', background: 'rgba(255, 170, 48, 0.15)', border: '1px solid rgba(255, 170, 48, 0.3)', borderRadius: 4, color: '#ffaa30', fontSize: 12, fontFamily: 'var(--font-mono)', cursor: 'pointer' }}
+              >
+                Ask Syntrophos in Chat &rarr;
+              </button>
             </div>
           ) : (
-            Object.entries(groups).map(([group, items]) => (
-              <div key={group}>
-                <div className="cmd-group-title">{group}</div>
+            grouped.map(({ group, items }) => (
+              <div key={group} style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 10, color: '#885522', fontWeight: 'bold', fontFamily: 'var(--font-mono)', letterSpacing: '0.14em', marginBottom: 8, paddingLeft: 8 }}>
+                  {group}
+                </div>
+
                 {items.map((c) => {
                   const globalIdx = filtered.indexOf(c);
+                  const isActive = globalIdx === activeIdx;
                   return (
                     <button
                       key={c.id}
                       type="button"
                       className="cmd-item"
-                      data-active={globalIdx === activeIdx || undefined}
+                      data-active={isActive || undefined}
                       role="option"
-                      aria-selected={globalIdx === activeIdx}
+                      aria-selected={isActive}
                       onMouseEnter={() => setActiveIdx(globalIdx)}
                       onClick={() => { c.run(); onClose(); }}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 12px',
+                        borderRadius: 6,
+                        background: isActive ? 'rgba(255, 170, 48, 0.15)' : 'transparent',
+                        border: isActive ? '1px solid rgba(255, 170, 48, 0.4)' : '1px solid transparent',
+                        color: '#fff5e6',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        marginBottom: 2,
+                        transition: 'all 120ms ease',
+                      }}
                     >
-                      <div className="cmd-item__icon">{c.icon}</div>
-                      <div className="cmd-item__text">
-                        <div className="cmd-item__title">{c.title}</div>
-                        {c.hint && <div className="cmd-item__hint">{c.hint}</div>}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+                        <div style={{ color: isActive ? '#ffaa30' : '#d99a4e', display: 'flex', alignItems: 'center' }}>
+                          {c.icon}
+                        </div>
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: isActive ? 700 : 500, color: isActive ? '#fff5e6' : '#e6d0b3' }}>
+                            {c.title}
+                          </div>
+                          {c.hint && (
+                            <div style={{ fontSize: 11, color: '#885522', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {c.hint}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      {c.shortcut && <span className="cmd-item__kbd">{c.shortcut}</span>}
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {c.tag && (
+                          <span style={{ fontSize: 9, fontFamily: 'var(--font-mono)', fontWeight: 'bold', background: 'rgba(255, 170, 48, 0.12)', color: '#ffaa30', padding: '2px 6px', borderRadius: 3, letterSpacing: '0.08em' }}>
+                            {c.tag}
+                          </span>
+                        )}
+                        {c.shortcut && (
+                          <span className="cmd-item__kbd" style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: '#885522' }}>
+                            {c.shortcut}
+                          </span>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
@@ -319,13 +423,14 @@ export function CommandPalette({
           )}
         </div>
 
-        <div className="panel__footer">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <span className="cmd-item__kbd">↑↓</span> navigate
-            <span className="cmd-item__kbd">↵</span> run
-            <span className="cmd-item__kbd">esc</span> close
+        {/* FOOTER SHORTCUTS */}
+        <div className="panel__footer" style={{ padding: '10px 18px', borderTop: '1px solid rgba(255, 170, 48, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 11, fontFamily: 'var(--font-mono)', color: '#885522' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <span><strong style={{ color: '#ffcc66' }}>↑↓</strong> navigate</span>
+            <span><strong style={{ color: '#ffcc66' }}>↵</strong> select</span>
+            <span><strong style={{ color: '#ffcc66' }}>esc</strong> close</span>
           </div>
-          <span className="muted">Syntrophos commands</span>
+          <span style={{ color: '#ffaa30' }}>SYNTHROPHOS COMMAND</span>
         </div>
       </div>
     </>

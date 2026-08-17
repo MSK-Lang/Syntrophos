@@ -49,7 +49,8 @@
   width: 72px;
   height: 72px;
   filter: drop-shadow(0 0 14px rgba(255, 170, 48, 0.45));
-  animation: driveSpin 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: driveSpin 2.5s linear infinite;
+  will-change: transform;
 }
 
 .drive-segment-1 {
@@ -68,16 +69,14 @@
 }
 
 @keyframes driveSpin {
-  0% { transform: rotate(0deg); }
-  33% { transform: rotate(120deg); }
-  66% { transform: rotate(240deg); }
-  100% { transform: rotate(360deg); }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes driveSegmentPulse {
-  0% { opacity: 0.82; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.04); }
-  100% { opacity: 0.82; transform: scale(1); }
+  0% { opacity: 0.82; }
+  50% { opacity: 1; }
+  100% { opacity: 0.82; }
 }
 
 /* --- Operational Progress Bar --- */
@@ -96,7 +95,21 @@
   background: linear-gradient(90deg, #dd7700, #ffaa30, #ffcc66);
   border-radius: 9999px;
   box-shadow: 0 0 10px rgba(255, 170, 48, 0.8);
-  transition: width 180ms ease-out;
+  transition: width 150ms ease-out;
+}
+
+.loader-progress-bar--indeterminate {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, #ffaa30, #ffcc66, transparent);
+  animation: loaderIndeterminate 1.4s linear infinite;
+}
+
+@keyframes loaderIndeterminate {
+  0% { left: -45%; }
+  100% { left: 100%; }
 }
 
 /* --- Status Typography --- */
