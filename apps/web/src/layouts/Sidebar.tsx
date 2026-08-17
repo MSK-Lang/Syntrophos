@@ -2,30 +2,41 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useCallback, type ReactNode } from 'react';
 import { Avatar } from '@/components/ui/primitives.js';
 import { useAuth } from '@/lib/services/index.js';
+import {
+  IconCore,
+  IconDashboard,
+  IconChat,
+  IconTasks,
+  IconNotes,
+  IconCalendar,
+  IconBot,
+  IconSettings,
+  type IconComponent,
+} from '@/lib/icons.js';
 
 type NavItem = {
   readonly id: string;
   readonly label: string;
   readonly to: string;
-  readonly iconSymbol: string;
+  readonly Icon: IconComponent;
   readonly badge?: number;
 };
 
 const SYSTEM_NAV: readonly NavItem[] = [
-  { id: 'core', label: 'CORE', to: '/core', iconSymbol: '◈' },
-  { id: 'dashboard', label: 'DASHBOARD', to: '/dashboard', iconSymbol: '▦' },
+  { id: 'core', label: 'CORE', to: '/core', Icon: IconCore },
+  { id: 'dashboard', label: 'DASHBOARD', to: '/dashboard', Icon: IconDashboard },
 ];
 
 const MODULE_NAV: readonly NavItem[] = [
-  { id: 'chat', label: 'CHAT', to: '/chat', iconSymbol: '◇', badge: 3 },
-  { id: 'tasks', label: 'TASKS', to: '/tasks', iconSymbol: '✓', badge: 5 },
-  { id: 'notes', label: 'NOTES', to: '/notes', iconSymbol: '□' },
-  { id: 'calendar', label: 'CALENDAR', to: '/calendar', iconSymbol: '◷' },
-  { id: 'agents', label: 'AGENTS', to: '/agents', iconSymbol: '⚡', badge: 1 },
+  { id: 'chat', label: 'CHAT', to: '/chat', Icon: IconChat, badge: 3 },
+  { id: 'tasks', label: 'TASKS', to: '/tasks', Icon: IconTasks, badge: 5 },
+  { id: 'notes', label: 'NOTES', to: '/notes', Icon: IconNotes },
+  { id: 'calendar', label: 'CALENDAR', to: '/calendar', Icon: IconCalendar },
+  { id: 'agents', label: 'AGENTS', to: '/agents', Icon: IconBot, badge: 1 },
 ];
 
 const UTILITY_NAV: readonly NavItem[] = [
-  { id: 'settings', label: 'SETTINGS', to: '/settings', iconSymbol: '⚙' },
+  { id: 'settings', label: 'SETTINGS', to: '/settings', Icon: IconSettings },
 ];
 
 export function Sidebar({
@@ -118,7 +129,7 @@ export function Sidebar({
               key={item.id}
               label={item.label}
               to={item.to}
-              iconSymbol={item.iconSymbol}
+              Icon={item.Icon}
               active={isActive(item.to)}
               onClick={onNavigate}
             />
@@ -144,7 +155,7 @@ export function Sidebar({
               key={item.id}
               label={item.label}
               to={item.to}
-              iconSymbol={item.iconSymbol}
+              Icon={item.Icon}
               active={isActive(item.to)}
               onClick={onNavigate}
               badge={item.badge}
@@ -159,7 +170,7 @@ export function Sidebar({
               key={item.id}
               label={item.label}
               to={item.to}
-              iconSymbol={item.iconSymbol}
+              Icon={item.Icon}
               active={isActive(item.to)}
               onClick={onNavigate}
             />
@@ -194,14 +205,14 @@ export function Sidebar({
 function NavItemRow({
   label,
   to,
-  iconSymbol,
+  Icon,
   active,
   onClick,
   badge,
 }: {
   readonly label: string;
   readonly to: string;
-  readonly iconSymbol: string;
+  readonly Icon: IconComponent;
   readonly active: boolean;
   readonly onClick?: (() => void) | undefined;
   readonly badge?: number | undefined;
@@ -233,13 +244,15 @@ function NavItemRow({
     >
       <span
         style={{
-          fontSize: '13px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           width: 16,
-          textAlign: 'center',
+          height: 16,
           color: active ? '#ffcc66' : '#ffaa30',
         }}
       >
-        {iconSymbol}
+        <Icon width={16} height={16} />
       </span>
       <span className="shell-nav__label" style={{ flex: '1 1 auto' }}>{label}</span>
       {badge ? (

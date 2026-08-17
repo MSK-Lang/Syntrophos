@@ -56,7 +56,7 @@ export function DynamicIsland({
               </span>
             ) : state === 'completed' && activeRun ? (
               <span style={{ color: '#ffcc66', letterSpacing: '0.06em' }}>
-                <strong style={{ color: '#34d399' }}>✓ COMPLETE:</strong> {activeRun.taskTitle}
+                <strong style={{ color: '#34d399' }}>COMPLETE:</strong> {activeRun.taskTitle}
               </span>
             ) : (
               <span style={{ color: '#d99a4e', letterSpacing: '0.12em' }}>

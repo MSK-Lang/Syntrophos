@@ -1,5 +1,6 @@
 import type { AgentRun } from '@/lib/services/agents.contract';
 import type { Task } from '@/lib/services/tasks.contract';
+import { IconCheckCircle, IconAlertCircle } from '@/lib/icons.js';
 
 export type MorphingDetailModalProps = {
   readonly item: AgentRun | Task | null;
@@ -34,7 +35,7 @@ export function MorphingDetailModal({
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span className="island-pulse-orb" />
             <span style={{ fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.12em', fontFamily: 'monospace' }}>
-              {isAgentRun ? 'SYNTHROPHOS // AGENT EXECUTION' : 'SYNTHROPHOS // DELIVERABLE DETAIL'}
+              {isAgentRun ? 'SYNTHROPHOS // AGENT EXECUTION TRACE' : 'SYNTHROPHOS // DELIVERABLE DETAIL'}
             </span>
           </div>
 
@@ -83,11 +84,17 @@ export function MorphingDetailModal({
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12, fontFamily: 'monospace' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#34d399' }}>
-                <span>✓ 01. WORKSPACE KNOWLEDGE INGEST</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <IconCheckCircle width={12} height={12} />
+                  <span>01. WORKSPACE KNOWLEDGE INGEST</span>
+                </span>
                 <span style={{ fontSize: 10, color: '#885522' }}>COMPLETED · 12ms</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#34d399' }}>
-                <span>✓ 02. CALENDAR &amp; SCHEDULE CROSS-REFERENCE</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <IconCheckCircle width={12} height={12} />
+                  <span>02. CALENDAR &amp; SCHEDULE CROSS-REFERENCE</span>
+                </span>
                 <span style={{ fontSize: 10, color: '#885522' }}>COMPLETED · 48ms</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#ffaa30' }}>
@@ -98,14 +105,36 @@ export function MorphingDetailModal({
                 <span style={{ fontSize: 10, color: '#ffaa30' }}>IN PROGRESS</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#885522' }}>
-                <span>○ 04. COMPOSE OUTBOUND SYNTHESIS</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <IconAlertCircle width={12} height={12} />
+                  <span>04. COMPOSE OUTBOUND SYNTHESIS</span>
+                </span>
                 <span style={{ fontSize: 10, color: '#885522' }}>QUEUED</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#885522' }}>
-                <span>○ 05. AWAIT OPERATOR APPROVAL</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <IconAlertCircle width={12} height={12} />
+                  <span>05. AWAIT OPERATOR APPROVAL</span>
+                </span>
                 <span style={{ fontSize: 10, color: '#885522' }}>GATEWAY</span>
               </div>
             </div>
+          </div>
+
+          {/* Evidence / Trust Breakdown */}
+          <div className="evidence-container">
+            <div style={{ fontSize: 11, fontWeight: 'bold', color: '#ffaa30', fontFamily: 'monospace' }}>
+              WHY THIS RECOMMENDATION? (EVIDENCE &amp; PROVENANCE)
+            </div>
+            <div style={{ fontSize: 11, color: '#d99a4e', marginTop: 6, lineHeight: 1.6 }}>
+              Based on:
+            </div>
+            <ul style={{ margin: '4px 0 0 16px', padding: 0, fontSize: 11, color: '#ffcc66', lineHeight: 1.6 }}>
+              <li>3 calendar events (Q3 Planning, Team Sync, Client Call)</li>
+              <li>12 relevant emails (Unanswered lead queries &amp; client requests)</li>
+              <li>Project deadline (Q3 Roadmap launch in 5 days)</li>
+              <li>Previous task history (Vault node: project-milestones.md)</li>
+            </ul>
           </div>
 
           {/* Action Control Buttons */}

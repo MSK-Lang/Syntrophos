@@ -15,6 +15,7 @@ import { CommandCenter } from '@/components/dashboard/CommandCenter';
 import { ContextStreams } from '@/components/dashboard/ContextStreams';
 import { ActionFloatingBar } from '@/components/dashboard/ActionFloatingBar';
 import { MorphingDetailModal } from '@/components/dashboard/MorphingDetailModal';
+import { ContextDrawerModal, type ContextSourceType } from '@/components/dashboard/ContextDrawerModal';
 import type { Task } from '@/lib/services/tasks.contract.js';
 import type { Note } from '@/lib/services/notes.contract.js';
 import type { Agent, AgentRun } from '@/lib/services/agents.contract.js';
@@ -42,6 +43,7 @@ export default function DashboardPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   const [inspectItem, setInspectItem] = useState<AgentRun | Task | null>(null);
+  const [contextSource, setContextSource] = useState<ContextSourceType>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -157,7 +159,7 @@ export default function DashboardPage() {
         {/* Dynamic Island Live Activity */}
         <DynamicIsland
           activeRun={activeRun}
-          progress={48}
+          progress={64}
           onInspect={(r) => setInspectItem(r)}
           onApprove={(r) => {
             setInspectItem(r);
@@ -168,7 +170,7 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 170, 48, 0.25)', paddingBottom: 14 }}>
           <div>
             <div style={{ fontSize: 10, letterSpacing: '0.25em', color: '#885522', marginBottom: 2 }}>
-              {wsName.toUpperCase()} // OPERATIONAL ENVIRONMENT
+              {wsName.toUpperCase()} // OPERATIONAL ENVIRONMENT ({mode.toUpperCase()})
             </div>
             <div style={{ fontSize: 18, fontWeight: 'bold', letterSpacing: '0.12em', color: '#ffaa30', textShadow: '0 0 8px rgba(255, 170, 48, 0.6)' }}>
               Good evening, {user?.displayName ?? user?.name ?? 'Operator'}.
@@ -204,19 +206,36 @@ export default function DashboardPage() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
           {/* Central Command Center */}
-          <CommandCenter onExecute={handleCommandExecute} />
+          <CommandCenter onExecute={handleCommandExecute} mode={mode} />
 
           {/* Operational Context Streams */}
           <ContextStreams
+            mode={mode}
             activeRuns={runs}
             todayTasks={todayTasks.length > 0 ? todayTasks : tasks}
             events={events}
             notes={notes}
             onSelectRun={(r) => setInspectItem(r)}
             onSelectTask={(t) => setInspectItem(t)}
+            onSelectContextSource={(source) => setContextSource(source)}
+            onApproveProposedAction={(title) => {
+              void handleCommandExecute(`Approved proposed action: ${title}`, 'agent');
+            }}
+            onLetAIHandle={(title) => {
+              void handleCommandExecute(`Break down and execute plan for: ${title}`, 'task');
+            }}
           />
         </div>
       )}
+
+      {/* Context Source Inspection Drawer */}
+      <ContextDrawerModal
+        sourceType={contextSource}
+        onClose={() => setContextSource(null)}
+        events={events}
+        notes={notes}
+        onExecuteAction={handleCommandExecute}
+      />
 
       {/* Morphing Detail Modal */}
       <MorphingDetailModal

@@ -262,5 +262,39 @@ export const IconChevronLeft: IconComponent = (props) => (
   </svg>
 );
 
+export const IconCore: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <polygon points="12 2 22 12 12 22 2 12 12 2" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+export const IconMail: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22 6 12 13 2 6" />
+  </svg>
+);
+
+export const IconCode: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <polyline points="16 18 22 12 16 6" />
+    <polyline points="8 6 2 12 8 18" />
+  </svg>
+);
+
+export const IconPlay: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </svg>
+);
+
+export const IconPause: IconComponent = (props) => (
+  <svg {...base} {...props}>
+    <rect x="6" y="4" width="4" height="16" />
+    <rect x="14" y="4" width="4" height="16" />
+  </svg>
+);
+
 export const IconAgents: IconComponent = IconBot;
 export const IconVoice: IconComponent = IconMic;

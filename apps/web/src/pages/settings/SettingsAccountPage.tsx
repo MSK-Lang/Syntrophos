@@ -189,7 +189,7 @@ export default function SettingsAccountPage() {
           onClick={() => void save()}
           loading={saveState === 'saving'}
         >
-          {saveState === 'saved' ? '✓ Changes saved' : 'Save changes'}
+          {saveState === 'saved' ? 'Changes saved' : 'Save changes'}
         </Button>
       </div>
     </div>

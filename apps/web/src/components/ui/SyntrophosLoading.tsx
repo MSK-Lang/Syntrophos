@@ -153,7 +153,7 @@ export function SyntrophosLoading({
         </div>
       ) : isReady ? (
         <div style={{ color: '#34d399', fontSize: 13, fontWeight: 600, fontFamily: 'monospace', marginTop: 10 }}>
-          ✓ SYSTEM READY
+          SYSTEM READY
         </div>
       ) : (
         <>
