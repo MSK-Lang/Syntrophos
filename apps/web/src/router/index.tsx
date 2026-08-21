@@ -1,60 +1,64 @@
 import { Suspense, lazy } from 'react';
 import { Outlet, createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom';
-import { AppShell } from '@/layouts/AppShell';
-import { SyntrophosLoading } from '@/components/ui/SyntrophosLoading';
+import { AppShell } from '@/layouts/AppShell.js';
+import { SyntrophosLoading } from '@/components/ui/SyntrophosLoading.js';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute.js';
 
 // Critical initial shell routes (static imports for instant boot)
-import LandingPage from '@/pages/LandingPage';
-import DashboardPage from '@/pages/DashboardPage';
-import SignInPage from '@/pages/auth/SignInPage';
-import SignUpPage from '@/pages/auth/SignUpPage';
-import NotFoundPage from '@/pages/NotFoundPage';
+import LandingPage from '@/pages/LandingPage.js';
+import DashboardPage from '@/pages/DashboardPage.js';
+import SignInPage from '@/pages/auth/SignInPage.js';
+import SignUpPage from '@/pages/auth/SignUpPage.js';
+import NotFoundPage from '@/pages/NotFoundPage.js';
 
 // Lazy-loaded heavy modules & secondary destinations
-const CorePage = lazy(() => import('@/pages/CorePage'));
-const InboxPage = lazy(() => import('@/pages/InboxPage'));
-const ChatListPage = lazy(() => import('@/pages/chat/ChatListPage'));
-const ChatThreadPage = lazy(() => import('@/pages/chat/ChatThreadPage'));
-const NotesListPage = lazy(() => import('@/pages/notes/NotesListPage'));
-const NoteReaderPage = lazy(() => import('@/pages/notes/NoteReaderPage'));
-const TasksPage = lazy(() => import('@/pages/TasksPage'));
-const ProjectsPage = lazy(() => import('@/pages/ProjectsPage'));
-const PeopleSchedulePage = lazy(() => import('@/pages/PeopleSchedulePage'));
-const IntelligencePage = lazy(() => import('@/pages/IntelligencePage'));
-const KnowledgePage = lazy(() => import('@/pages/KnowledgePage'));
-const AgentDetailPage = lazy(() => import('@/pages/AgentDetailPage'));
-const VoicePage = lazy(() => import('@/pages/VoicePage'));
-const IntegrationsPage = lazy(() => import('@/pages/IntegrationsPage'));
-const PluginsPage = lazy(() => import('@/pages/PluginsPage'));
-const WorkspacesPage = lazy(() => import('@/pages/WorkspacesPage'));
-const StarredPage = lazy(() => import('@/pages/StarredPage'));
-const HelpPage = lazy(() => import('@/pages/HelpPage'));
+const CorePage = lazy(() => import('@/pages/CorePage.js'));
+const InboxPage = lazy(() => import('@/pages/InboxPage.js'));
+const ChatListPage = lazy(() => import('@/pages/chat/ChatListPage.js'));
+const ChatThreadPage = lazy(() => import('@/pages/chat/ChatThreadPage.js'));
+const NotesListPage = lazy(() => import('@/pages/notes/NotesListPage.js'));
+const NoteReaderPage = lazy(() => import('@/pages/notes/NoteReaderPage.js'));
+const TasksPage = lazy(() => import('@/pages/TasksPage.js'));
+const ProjectsPage = lazy(() => import('@/pages/ProjectsPage.js'));
+const PeopleSchedulePage = lazy(() => import('@/pages/PeopleSchedulePage.js'));
+const IntelligencePage = lazy(() => import('@/pages/IntelligencePage.js'));
+const KnowledgePage = lazy(() => import('@/pages/KnowledgePage.js'));
+const AgentDetailPage = lazy(() => import('@/pages/AgentDetailPage.js'));
+const VoicePage = lazy(() => import('@/pages/VoicePage.js'));
+const IntegrationsPage = lazy(() => import('@/pages/IntegrationsPage.js'));
+const PluginsPage = lazy(() => import('@/pages/PluginsPage.js'));
+const WorkspacesPage = lazy(() => import('@/pages/WorkspacesPage.js'));
+const StarredPage = lazy(() => import('@/pages/StarredPage.js'));
+const HelpPage = lazy(() => import('@/pages/HelpPage.js'));
 
-const SettingsRootPage = lazy(() => import('@/pages/settings/SettingsRootPage'));
-const SettingsAccountPage = lazy(() => import('@/pages/settings/SettingsAccountPage'));
-const SettingsProvidersPage = lazy(() => import('@/pages/settings/SettingsProvidersPage'));
-const SettingsWorkspacePage = lazy(() => import('@/pages/settings/SettingsWorkspacePage'));
-const SettingsIntegrationsPage = lazy(() => import('@/pages/settings/SettingsIntegrationsPage'));
-const SettingsPluginsPage = lazy(() => import('@/pages/settings/SettingsPluginsPage'));
-const SettingsSyncPage = lazy(() => import('@/pages/settings/SettingsSyncPage'));
-const SettingsNotificationsPage = lazy(() => import('@/pages/settings/SettingsNotificationsPage'));
-const SettingsVoicePage = lazy(() => import('@/pages/settings/SettingsVoicePage'));
-const SettingsAiPage = lazy(() => import('@/pages/settings/SettingsAiPage'));
-const SettingsAppearancePage = lazy(() => import('@/pages/settings/SettingsAppearancePage'));
+const SettingsRootPage = lazy(() => import('@/pages/settings/SettingsRootPage.js'));
+const SettingsAccountPage = lazy(() => import('@/pages/settings/SettingsAccountPage.js'));
+const SettingsProvidersPage = lazy(() => import('@/pages/settings/SettingsProvidersPage.js'));
+const SettingsWorkspacePage = lazy(() => import('@/pages/settings/SettingsWorkspacePage.js'));
+const SettingsIntegrationsPage = lazy(() => import('@/pages/settings/SettingsIntegrationsPage.js'));
+const SettingsPluginsPage = lazy(() => import('@/pages/settings/SettingsPluginsPage.js'));
+const SettingsSyncPage = lazy(() => import('@/pages/settings/SettingsSyncPage.js'));
+const SettingsNotificationsPage = lazy(() => import('@/pages/settings/SettingsNotificationsPage.js'));
+const SettingsVoicePage = lazy(() => import('@/pages/settings/SettingsVoicePage.js'));
+const SettingsAiPage = lazy(() => import('@/pages/settings/SettingsAiPage.js'));
+const SettingsAppearancePage = lazy(() => import('@/pages/settings/SettingsAppearancePage.js'));
 
-const PublicLayout = lazy(() => import('@/layouts/PublicLayout'));
-const AboutPage = lazy(() => import('@/pages/AboutPage'));
-const FaqPage = lazy(() => import('@/pages/FaqPage'));
+const PublicLayout = lazy(() => import('@/layouts/PublicLayout.js'));
+const AboutPage = lazy(() => import('@/pages/AboutPage.js'));
+const FaqPage = lazy(() => import('@/pages/FaqPage.js'));
 
 const SuspenseFallback = <SyntrophosLoading variant="workspace" label="INITIALIZING" />;
 
+
 const shellRoutes: RouteObject = {
   element: (
-    <AppShell>
-      <Suspense fallback={SuspenseFallback}>
-        <Outlet />
-      </Suspense>
-    </AppShell>
+    <ProtectedRoute>
+      <AppShell>
+        <Suspense fallback={SuspenseFallback}>
+          <Outlet />
+        </Suspense>
+      </AppShell>
+    </ProtectedRoute>
   ),
   children: [
     { path: '/dashboard', element: <DashboardPage /> },
@@ -127,9 +131,11 @@ const router = createBrowserRouter([
   {
     path: '/core',
     element: (
-      <Suspense fallback={<SyntrophosLoading variant="global" label="INITIALIZING CORE" />}>
-        <CorePage />
-      </Suspense>
+      <ProtectedRoute>
+        <Suspense fallback={<SyntrophosLoading variant="global" label="INITIALIZING CORE" />}>
+          <CorePage />
+        </Suspense>
+      </ProtectedRoute>
     ),
   },
   shellRoutes,

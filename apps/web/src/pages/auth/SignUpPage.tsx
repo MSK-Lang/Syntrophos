@@ -1,27 +1,60 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/lib/auth.js';
 import { Button, Input, Label } from '@/components/ui/primitives.js';
-import { IconGoogle, IconGithub, IconEye, IconEyeOff } from '@/lib/icons.js';
-
-import { setFirstTimeUser } from '@/lib/services/onboarding';
+import { IconEye, IconEyeOff } from '@/lib/icons.js';
+import { setFirstTimeUser } from '@/lib/services/onboarding.js';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const { signUp, user } = useAuth();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [terms, setTerms] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFirstTimeUser(true);
-    navigate('/core', { replace: true });
-  };
+  const [errorMsg, setErrorMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleOAuth = () => {
-    setFirstTimeUser(true);
-    navigate('/core', { replace: true });
+  // If already authenticated, redirect to /core
+  useEffect(() => {
+    if (user) {
+      navigate('/core', { replace: true });
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    if (!terms) {
+      setErrorMsg('Please agree to the Terms of Service and Privacy Policy to continue.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMsg('Password should be at least 8 characters.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const res = await signUp(email, password, name.trim());
+
+      if (res.error) {
+        setErrorMsg(res.error.message);
+        return;
+      }
+
+      setFirstTimeUser(true);
+      navigate('/core', { replace: true });
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'An unexpected error occurred during signup.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -70,7 +103,7 @@ export default function SignUpPage() {
 
         {/* System Telemetry Metadata */}
         <div style={{ fontSize: 11, color: '#885522', fontFamily: 'var(--font-mono)' }}>
-          SYNTHROPHOS OS // v0.1.0 · LOCAL CONTEXT MATRIX
+          SYNTHROPHOS OS // v0.1.0 · CUSTOM AUTH
         </div>
       </div>
 
@@ -90,67 +123,12 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          {/* OAuth Buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <button
-              type="button"
-              onClick={handleOAuth}
-              className="public-btn-tactile"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                background: 'rgba(16, 8, 2, 0.8)',
-                border: '1px solid rgba(255, 170, 48, 0.25)',
-                borderRadius: 6,
-                color: '#fff5e6',
-                fontSize: 13,
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 10,
-                cursor: 'pointer',
-              }}
-            >
-              <IconGoogle width={18} height={18} />
-              Continue with Google
-            </button>
-
-            <button
-              type="button"
-              onClick={handleOAuth}
-              className="public-btn-tactile"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                background: 'rgba(16, 8, 2, 0.8)',
-                border: '1px solid rgba(255, 170, 48, 0.25)',
-                borderRadius: 6,
-                color: '#fff5e6',
-                fontSize: 13,
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 10,
-                cursor: 'pointer',
-              }}
-            >
-              <IconGithub width={18} height={18} />
-              Continue with GitHub
-            </button>
-          </div>
-
-          {/* Separator */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255, 170, 48, 0.15)' }} />
-            <span style={{ fontSize: 10, color: '#885522', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
-              OR CONTINUE WITH EMAIL
-            </span>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255, 170, 48, 0.15)' }} />
-          </div>
+          {/* Status Messages */}
+          {errorMsg && (
+            <div style={{ padding: '12px 16px', background: 'rgba(255, 60, 60, 0.12)', border: '1px solid rgba(255, 80, 80, 0.35)', borderRadius: 6, color: '#ff9999', fontSize: 13, lineHeight: 1.5 }}>
+              {errorMsg}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -216,10 +194,11 @@ export default function SignUpPage() {
             <Button
               variant="primary"
               type="submit"
+              disabled={isLoading}
               className="public-btn-tactile"
               style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 'bold', padding: '12px 20px', borderRadius: 4, marginTop: 6 }}
             >
-              [ CREATE ACCOUNT ]
+              {isLoading ? '[ CREATING ACCOUNT... ]' : '[ CREATE ACCOUNT ]'}
             </Button>
           </form>
 
@@ -233,3 +212,4 @@ export default function SignUpPage() {
     </div>
   );
 }
+

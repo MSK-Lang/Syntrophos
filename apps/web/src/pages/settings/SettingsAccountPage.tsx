@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Button, Input, Separator, Avatar, Field } from '@/components/ui/primitives.js';
+import { useNavigate } from 'react-router-dom';
+import { Button, Input, Avatar, Field } from '@/components/ui/primitives.js';
 import { PageLoader } from '@/components/ui/states.js';
-import { useAuth } from '@/lib/services/index.js';
+import { useAuth } from '@/lib/auth.js';
 
 export default function SettingsAccountPage() {
-  const { user, updateCurrentUser, changePassword } = useAuth();
+  const navigate = useNavigate();
+  const { user, updateCurrentUser, changePassword, signOut } = useAuth();
   const [loading, setLoading] = useState(!user);
   const [name, setName] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -152,6 +154,33 @@ export default function SettingsAccountPage() {
           </div>
         </div>
       </div>
+
+      {/* --- SESSION SECTION --- */}
+      <div style={{ marginTop: 12 }}>
+        <div style={{ fontSize: 11, fontFamily: 'monospace', letterSpacing: '0.14em', color: '#ffaa30', marginBottom: 16 }}>
+          SESSION
+        </div>
+
+        <div className="settings-form-row">
+          <div className="settings-form-row__label">
+            <div className="settings-form-row__title">Sign out</div>
+            <div className="settings-form-row__desc">Sign out of your active session on this device.</div>
+          </div>
+          <div className="settings-form-row__control">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={async () => {
+                await signOut();
+                navigate('/sign-in', { replace: true });
+              }}
+            >
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </div>
+
 
       {/* --- DANGER ZONE SECTION --- */}
       <div style={{ marginTop: 12 }}>

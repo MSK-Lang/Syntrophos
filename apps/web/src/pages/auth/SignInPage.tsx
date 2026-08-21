@@ -1,31 +1,56 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/lib/auth.js';
 import { Button, Input, Label } from '@/components/ui/primitives.js';
-import { IconGoogle, IconGithub, IconEye, IconEyeOff } from '@/lib/icons.js';
-
-import { setFirstTimeUser } from '@/lib/services/onboarding';
+import { IconEye, IconEyeOff } from '@/lib/icons.js';
+import { setFirstTimeUser } from '@/lib/services/onboarding.js';
 
 export default function SignInPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { signIn, user } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // If already authenticated, redirect to /core (or the return location)
+  useEffect(() => {
+    if (user) {
+      const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/core';
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, location]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFirstTimeUser(false);
-    navigate('/core', { replace: true });
-  };
+    setErrorMsg('');
 
-  const handleOAuth = () => {
-    setFirstTimeUser(false);
-    navigate('/core', { replace: true });
+    try {
+      setIsLoading(true);
+      const res = await signIn(email, password);
+
+      if (res.error) {
+        setErrorMsg(res.error.message);
+        return;
+      }
+
+      setFirstTimeUser(false);
+      const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/core';
+      navigate(from, { replace: true });
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Invalid email address or password.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div style={{ minHeight: '100vh', width: '100%', display: 'grid', gridTemplateColumns: '1.1fr 1.2fr', background: '#040201', color: '#fff5e6', fontFamily: 'var(--font-sans)' }}>
-      {/* LEFT COLUMN: EDITORIAL BRAND IDENT } */}
+      {/* LEFT COLUMN: EDITORIAL BRAND IDENT */}
       <div
         style={{
           padding: '60px 56px',
@@ -69,7 +94,7 @@ export default function SignInPage() {
 
         {/* System Telemetry Metadata */}
         <div style={{ fontSize: 11, color: '#885522', fontFamily: 'var(--font-mono)' }}>
-          SYNTHROPHOS OS // v0.1.0 · LOCAL CONTEXT MATRIX
+          SYNTHROPHOS OS // v0.1.0 · CUSTOM AUTH
         </div>
       </div>
 
@@ -89,67 +114,11 @@ export default function SignInPage() {
             </p>
           </div>
 
-          {/* OAuth Buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <button
-              type="button"
-              onClick={handleOAuth}
-              className="public-btn-tactile"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                background: 'rgba(16, 8, 2, 0.8)',
-                border: '1px solid rgba(255, 170, 48, 0.25)',
-                borderRadius: 6,
-                color: '#fff5e6',
-                fontSize: 13,
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 10,
-                cursor: 'pointer',
-              }}
-            >
-              <IconGoogle width={18} height={18} />
-              Continue with Google
-            </button>
-
-            <button
-              type="button"
-              onClick={handleOAuth}
-              className="public-btn-tactile"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                background: 'rgba(16, 8, 2, 0.8)',
-                border: '1px solid rgba(255, 170, 48, 0.25)',
-                borderRadius: 6,
-                color: '#fff5e6',
-                fontSize: 13,
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 10,
-                cursor: 'pointer',
-              }}
-            >
-              <IconGithub width={18} height={18} />
-              Continue with GitHub
-            </button>
-          </div>
-
-          {/* Separator */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255, 170, 48, 0.15)' }} />
-            <span style={{ fontSize: 10, color: '#885522', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
-              OR CONTINUE WITH EMAIL
-            </span>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255, 170, 48, 0.15)' }} />
-          </div>
+          {errorMsg && (
+            <div style={{ padding: '12px 16px', background: 'rgba(255, 60, 60, 0.12)', border: '1px solid rgba(255, 80, 80, 0.35)', borderRadius: 6, color: '#ff9999', fontSize: 13, lineHeight: 1.5 }}>
+              {errorMsg}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -169,7 +138,6 @@ export default function SignInPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Label htmlFor="password" style={{ fontSize: 12, color: '#ffcc66', fontWeight: 600 }}>Password</Label>
-                <Link to="/sign-in" style={{ fontSize: 11, color: '#d99a4e', textDecoration: 'none' }}>Forgot password?</Link>
               </div>
               <div style={{ position: 'relative' }}>
                 <Input
@@ -205,10 +173,11 @@ export default function SignInPage() {
             <Button
               variant="primary"
               type="submit"
+              disabled={isLoading}
               className="public-btn-tactile"
               style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 'bold', padding: '12px 20px', borderRadius: 4, marginTop: 6 }}
             >
-              [ LOG IN ]
+              {isLoading ? '[ AUTHENTICATING... ]' : '[ LOG IN ]'}
             </Button>
           </form>
 
@@ -222,3 +191,4 @@ export default function SignInPage() {
     </div>
   );
 }
+

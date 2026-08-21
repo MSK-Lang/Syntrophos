@@ -1,22 +1,44 @@
-import { afterAll, describe, expect, it } from 'vitest';
-
+import { describe, expect, it } from 'vitest';
 import { createApp } from '../src/app.js';
+import { loadConfig } from '../src/config/env.js';
 
-const app = createApp({
-  host: '127.0.0.1',
-  port: 3000,
-  logLevel: 'info',
-});
+describe('Health & API v1 Namespace Routes', () => {
+  const config = loadConfig({
+    NODE_ENV: 'test',
+    LOG_LEVEL: 'fatal',
+  });
 
-afterAll(async () => {
-  await app.close();
-});
+  it('GET /health returns healthy status, uptime, and database status', async () => {
+    const app = createApp(config);
+    const res = await app.inject({
+      method: 'GET',
+      url: '/health',
+    });
 
-describe('GET /health', () => {
-  it('reports that the API is available', async () => {
-    const response = await app.inject({ method: 'GET', url: '/health' });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.status).toBe('ok');
+    expect(body.version).toBe('0.1.0');
+    expect(typeof body.uptimeSeconds).toBe('number');
+    expect(typeof body.timestamp).toBe('string');
+    expect(body.database).toBe('unconfigured');
+    await app.close();
+  });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual({ status: 'ok' });
+  it('GET /api/v1 returns namespace status', async () => {
+    const app = createApp(config);
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/v1',
+    });
+
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body).toEqual({
+      api: 'Syntrophos API',
+      version: 'v1',
+      status: 'active',
+    });
+    await app.close();
   });
 });

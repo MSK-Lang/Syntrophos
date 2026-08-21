@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import SyntrophosOrb from '@/components/SyntrophosOrb';
-import { SyntrophosLoading } from '@/components/ui/SyntrophosLoading';
+import SyntrophosOrb from '@/components/SyntrophosOrb.js';
+import { SyntrophosLoading } from '@/components/ui/SyntrophosLoading.js';
 
 import {
   getOnboardingState,
   dismissWelcomePrompt,
-} from '@/lib/services/onboarding';
-import { Button } from '@/components/ui/primitives';
+} from '@/lib/services/onboarding.js';
+import { Button } from '@/components/ui/primitives.js';
 
 export type CoreStatus = 'initializing' | 'ready' | 'error';
 

@@ -2,8 +2,6 @@ import {
   createContext,
   useContext,
   useMemo,
-  useState,
-  useEffect,
   useCallback,
   type ReactNode,
 } from 'react';
@@ -87,6 +85,9 @@ const MOCK_SERVICES: ServiceBundle = Object.freeze({
   calendar: Object.freeze(mockCalendarService),
 });
 
+import { mockUser } from './mock/data.js';
+import { useAuth as useSyntrophosAuth } from '../auth.js';
+
 export function ServiceProvider({
   children,
   overrides,
@@ -94,52 +95,77 @@ export function ServiceProvider({
   readonly children: ReactNode;
   readonly overrides?: Partial<ServiceBundle>;
 }) {
+  const auth = useSyntrophosAuth();
   const services = useMemo<ServiceBundle>(() => ({ ...MOCK_SERVICES, ...overrides }), [overrides]);
 
-  const [session, setSession] = useState<PromiseResult<SessionInfo>>({ status: 'loading' });
-  const [currentWorkspace, setCurrentWorkspace] = useState<PromiseResult<Workspace>>({ status: 'loading' });
-
-  const user: User | null = session.status === 'success' ? session.data.user : null;
-
-  const loadInitial = useCallback(async () => {
-    try {
-      const s = await services.auth.getCurrentSession();
-      setSession(s ? { status: 'success', data: s } : { status: 'idle' });
-      try {
-        const ws = await services.workspace.getCurrent();
-        setCurrentWorkspace({ status: 'success', data: ws });
-      } catch (err) {
-        setCurrentWorkspace({ status: 'error', error: err instanceof Error ? err : new Error(String(err)) });
+  const user: User | null = auth.user
+    ? {
+        id: auth.user.id as ID,
+        email: auth.user.email,
+        name: auth.user.name,
+        displayName: auth.user.displayName,
+        ...(auth.user.avatarUrl ? { avatarUrl: auth.user.avatarUrl } : {}),
+        role: 'owner',
+        emailVerified: Boolean(auth.user.emailVerified),
+        preferences: mockUser.preferences,
+        audit: {
+          createdAt: auth.user.createdAt ?? new Date().toISOString(),
+          updatedAt: auth.user.updatedAt ?? new Date().toISOString(),
+        },
+        lastActiveAt: new Date().toISOString(),
       }
-    } catch (err) {
-      setSession({ status: 'error', error: err instanceof Error ? err : new Error(String(err)) });
-    }
-  }, [services]);
+    : null;
 
-  useEffect(() => {
-    void loadInitial();
-  }, [loadInitial]);
+
+  const session = useMemo<PromiseResult<SessionInfo>>(() => {
+    if (auth.loading) return { status: 'loading' };
+    if (!auth.user || !user) return { status: 'idle' };
+    return {
+      status: 'success',
+      data: {
+        workspaceId: (auth.currentWorkspace?.id ?? 'ws-default') as ID,
+        user,
+        tokenExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    };
+  }, [auth.loading, auth.user, auth.currentWorkspace, user]);
+
+
+  const currentWorkspace = useMemo<PromiseResult<Workspace>>(() => {
+    if (auth.loading) return { status: 'loading' };
+    if (!auth.currentWorkspace) return { status: 'idle' };
+    return {
+      status: 'success',
+      data: {
+        id: auth.currentWorkspace.id as ID,
+        settings: {
+          name: auth.currentWorkspace.name,
+          description: '',
+          icon: '⚡',
+          defaultRole: 'member',
+          allowInvites: true,
+          requireTwoFactor: false,
+          branding: {},
+        },
+        plan: (auth.currentWorkspace.subscriptionPlan || 'free') as 'free' | 'pro' | 'enterprise',
+        memberCount: 1,
+        storageUsedBytes: 0,
+        storageLimitBytes: 10_000_000_000,
+        audit: { createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        currentUserRole: (auth.currentWorkspace.role || 'owner') as 'owner' | 'admin' | 'member' | 'viewer',
+      },
+    };
+  }, [auth.loading, auth.currentWorkspace]);
 
   const refreshSession = useCallback(async () => {
-    setSession({ status: 'loading' });
-    setCurrentWorkspace({ status: 'loading' });
-    await loadInitial();
-  }, [loadInitial]);
+    await auth.refreshSession();
+  }, [auth]);
 
   const setCurrentWorkspaceId = useCallback(
     async (id: ID) => {
-      setCurrentWorkspace({ status: 'loading' });
-      try {
-        const ws = await services.workspace.switchTo(id);
-        setCurrentWorkspace({ status: 'success', data: ws });
-      } catch (err) {
-        setCurrentWorkspace({
-          status: 'error',
-          error: err instanceof Error ? err : new Error(String(err)),
-        });
-      }
+      auth.setCurrentWorkspaceId(id);
     },
-    [services],
+    [auth],
   );
 
   const value = useMemo<ServiceContextValue>(
@@ -165,10 +191,8 @@ export function useServices(): ServiceContextValue {
   return ctx;
 }
 
-export function useAuth(): AuthService & Pick<AppSessionState, 'session' | 'user' | 'refreshSession'> {
-  const s = useServices();
-  return { ...s.auth, session: s.session, user: s.user, refreshSession: s.refreshSession };
-}
+export { useAuth } from '../auth.js';
+
 
 export function useWorkspace(): WorkspaceService &
   Pick<AppSessionState, 'currentWorkspace' | 'setCurrentWorkspaceId'> {
