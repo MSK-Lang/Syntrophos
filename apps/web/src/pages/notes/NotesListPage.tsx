@@ -295,13 +295,13 @@ export function SyntrophosNotesWorkspace() {
         {/* Note List Scroll Area */}
         <div style={{ overflowY: 'auto', flex: '1 1 auto', padding: '10px 8px' }}>
           {loadingNotes ? (
-            <PageLoader label="LOADING INDEX…" />
+            <PageLoader label="Loading notes…" />
           ) : errorNotes ? (
-            <ErrorState title="FAILED TO LOAD INDEX" error={errorNotes.message} />
+            <ErrorState title="Failed to load notes" error={errorNotes.message} />
           ) : filteredNotes.length === 0 ? (
             <div style={{ padding: '24px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 11, color: '#885522', fontFamily: 'monospace', marginBottom: 10 }}>
-                {searchQuery ? 'NO MATCHES FOUND' : 'NO NOTES IN THIS VIEW'}
+                {searchQuery ? 'No notes found' : 'No notes in this view'}
               </div>
               <button
                 type="button"
@@ -368,10 +368,10 @@ export function SyntrophosNotesWorkspace() {
       {/* COLUMN 3: Right Note Reader / Content Pane (1fr) */}
       <main className="notes-content-pane" ref={contentRef}>
         {loadingDetail ? (
-          <PageLoader label="OPENING VAULT NOTE…" />
+          <PageLoader label="Loading note…" />
         ) : errorDetail ? (
           <div style={{ margin: 'auto', textAlign: 'center', padding: '40px' }}>
-            <ErrorState title="FAILED TO LOAD NOTE" error={errorDetail.message} />
+            <ErrorState title="Failed to load note" error={errorDetail.message} />
           </div>
         ) : !hasSelectedNote || !currentNote ? (
           /* Centered Empty State inside Note Detail Pane */
@@ -394,8 +394,8 @@ export function SyntrophosNotesWorkspace() {
               <IconNotes width={24} height={24} />
             </div>
 
-            <div style={{ fontSize: 10, letterSpacing: '0.22em', color: '#885522', fontFamily: 'monospace', marginBottom: 6 }}>
-              SYNTHROPHOS // NOTES
+            <div style={{ fontSize: 10, letterSpacing: '0.12em', color: '#ffaa30', fontWeight: 600, fontFamily: 'monospace', marginBottom: 6 }}>
+              Notes
             </div>
 
             <h2 style={{ fontSize: 22, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.03em', margin: '0 0 8px 0', textShadow: '0 0 10px rgba(255, 170, 48, 0.4)' }}>
@@ -488,9 +488,9 @@ export function SyntrophosNotesWorkspace() {
               {/* Optional Table of Contents Outline Widget (ONLY when headings exist!) */}
               {headings.length > 0 && (
                 <div className="notes-outline-widget">
-                  <div style={{ fontSize: 10, letterSpacing: '0.14em', color: '#ffaa30', fontWeight: 'bold', fontFamily: 'monospace', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{ fontSize: 10, letterSpacing: '0.08em', color: '#ffaa30', fontWeight: 'bold', fontFamily: 'monospace', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <IconCode width={12} height={12} />
-                    <span>OUTLINE // TABLE OF CONTENTS</span>
+                    <span>Table of Contents</span>
                   </div>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 4, fontFamily: 'monospace', fontSize: 11 }}>
                     {headings.map((h, i) => (

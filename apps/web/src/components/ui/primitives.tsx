@@ -274,26 +274,92 @@ export function Label({ required, className = '', children, ...rest }: LabelProp
   );
 }
 
-export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   readonly leading?: ReactNode;
   readonly trailing?: ReactNode;
   readonly invalid?: boolean;
   readonly inputSize?: 'sm' | 'md' | 'lg';
+  readonly wrapperClassName?: string;
+  readonly wrapperStyle?: React.CSSProperties;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { leading, trailing, invalid, inputSize = 'md', className = '', id, ...rest },
+  {
+    leading,
+    trailing,
+    invalid,
+    inputSize = 'md',
+    className = '',
+    id,
+    style,
+    wrapperClassName = '',
+    wrapperStyle,
+    ...rest
+  },
   ref,
 ) {
+  const {
+    background,
+    backgroundColor,
+    border,
+    borderColor,
+    borderRadius,
+    width,
+    maxWidth,
+    minWidth,
+    flex,
+    margin,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    color,
+    fontSize,
+    ...inputRestStyle
+  } = (style || {}) as React.CSSProperties;
+
+  const combinedWrapperStyle: React.CSSProperties = {
+    ...(background ? { background } : {}),
+    ...(backgroundColor ? { backgroundColor } : {}),
+    ...(border ? { border } : {}),
+    ...(borderColor ? { borderColor } : {}),
+    ...(borderRadius ? { borderRadius } : {}),
+    ...(width ? { width } : {}),
+    ...(maxWidth ? { maxWidth } : {}),
+    ...(minWidth ? { minWidth } : {}),
+    ...(flex ? { flex } : {}),
+    ...(margin ? { margin } : {}),
+    ...(marginTop ? { marginTop } : {}),
+    ...(marginBottom ? { marginBottom } : {}),
+    ...(marginLeft ? { marginLeft } : {}),
+    ...(marginRight ? { marginRight } : {}),
+    ...wrapperStyle,
+  };
+
   return (
     <div
       data-invalid={invalid || undefined}
-      className={['ui-input-wrap', `ui-input-wrap--${inputSize}`, className]
+      className={['ui-input-wrap', `ui-input-wrap--${inputSize}`, className, wrapperClassName]
         .filter(Boolean)
         .join(' ')}
+      style={Object.keys(combinedWrapperStyle).length > 0 ? combinedWrapperStyle : undefined}
     >
       {leading && <span className="ui-input-wrap__lead">{leading}</span>}
-      <input ref={ref} id={id} aria-invalid={invalid || undefined} {...rest} />
+      <input
+        ref={ref}
+        id={id}
+        aria-invalid={invalid || undefined}
+        style={{
+          border: 'none',
+          outline: 'none',
+          background: 'transparent',
+          boxShadow: 'none',
+          color: color ?? 'inherit',
+          fontSize: fontSize ?? 'inherit',
+          ...inputRestStyle,
+        }}
+        {...rest}
+      />
       {trailing && <span className="ui-input-wrap__trail">{trailing}</span>}
     </div>
   );

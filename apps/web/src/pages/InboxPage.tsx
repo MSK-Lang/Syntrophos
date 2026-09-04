@@ -213,8 +213,8 @@ export default function InboxPage() {
       <PageHeader
         variant="wide"
         icon={<IconMail width={22} height={22} />}
-        title="INBOX // COMMUNICATIONS & ATTENTION"
-        subtitle={`${attentionCount} ITEMS NEED ATTENTION`}
+        title="Inbox"
+        subtitle={`${attentionCount} items need attention`}
         actions={[
           {
             id: 'compose',
@@ -330,7 +330,7 @@ export default function InboxPage() {
           <div style={{ padding: '60px', textAlign: 'center' }}>
             <EmptyState
               icon={<IconMail width={36} height={36} />}
-              title="INBOX CLEAR"
+              title="Inbox clear"
               description="Nothing requires your attention. All communications and agent actions are up to date."
               action={{ label: 'Compose message', onClick: () => setIsComposeOpen(true) }}
             />
@@ -536,7 +536,7 @@ function InboxDetailDrawer({
       <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.95)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>
           <IconMail width={14} height={14} />
-          <span>INBOX DETAIL // {item.id.toUpperCase()}</span>
+          <span>Message Details</span>
         </div>
         <button type="button" onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#885522', cursor: 'pointer' }}>
           <IconX width={16} height={16} />
@@ -547,13 +547,13 @@ function InboxDetailDrawer({
       <div style={{ padding: '20px', flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 18 }}>
         <div>
           <div style={{ fontSize: 10, color: '#885522', fontFamily: 'var(--font-mono)', marginBottom: 2 }}>
-            SENDER: {item.sender} ({item.roleOrAgent ?? 'OPERATOR'})
+            Sender: {item.sender} ({item.roleOrAgent ?? 'User'})
           </div>
           <div style={{ fontSize: 18, fontWeight: 'bold', color: '#ffcc66', lineHeight: 1.3 }}>
             {item.title}
           </div>
           <div style={{ fontSize: 10, color: '#885522', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
-            RECEIVED: {item.timestamp}
+            Received: {item.timestamp}
           </div>
         </div>
 

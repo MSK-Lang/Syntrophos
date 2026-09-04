@@ -93,8 +93,8 @@ export default function CorePage() {
       {!loaderRevealed && (
         <SyntrophosLoading
           variant="global"
-          label="INITIALIZING CORE"
-          statusMessage="CALIBRATING VISUAL ENGINE · ESTABLISHING CORE LINK"
+          label="Loading Core…"
+          statusMessage="Initializing visual engine"
           isReady={isReady}
           onRevealed={handleRevealed}
           error={coreStatus === 'error' ? (errorMessage || 'The visual engine could not be initialized.') : null}
@@ -125,6 +125,7 @@ export default function CorePage() {
       {/* SAVE MY SYNTHROPHOS UPGRADE MODAL */}
       {showSaveModal && (
         <div
+          className="ui-dialog__backdrop"
           style={{
             position: 'fixed',
             inset: 0,
@@ -136,8 +137,12 @@ export default function CorePage() {
             justifyContent: 'center',
             padding: 24,
           }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowSaveModal(false);
+          }}
         >
           <div
+            className="ui-dialog"
             style={{
               background: '#0a0502',
               border: '1px solid rgba(255, 170, 48, 0.45)',
@@ -197,6 +202,7 @@ export default function CorePage() {
       {/* WELCOME ONBOARDING PROMPT MODAL */}
       {isReady && showWelcomeModal && (
         <div
+          className="ui-dialog__backdrop"
           style={{
             position: 'fixed',
             inset: 0,
@@ -208,8 +214,12 @@ export default function CorePage() {
             justifyContent: 'center',
             padding: 24,
           }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) handleDismissWelcome();
+          }}
         >
           <div
+            className="ui-dialog"
             style={{
               background: '#090502',
               border: '1px solid rgba(255, 170, 48, 0.4)',

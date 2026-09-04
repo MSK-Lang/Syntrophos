@@ -101,7 +101,7 @@ export default function AboutFaqPage() {
             Sign In
           </Button>
           <Button variant="primary" size="sm" onClick={() => navigate('/dashboard')} style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 'bold' }}>
-            [ GET STARTED ]
+            Get Started
           </Button>
         </div>
       </header>
@@ -109,7 +109,7 @@ export default function AboutFaqPage() {
       {/* 2. HERO SECTION */}
       <section id="about" style={{ padding: '100px 40px 80px 40px', maxWidth: 1100, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
         <div style={{ fontSize: 11, color: '#ffaa30', fontWeight: 'bold', letterSpacing: '0.16em', fontFamily: 'var(--font-mono)', background: 'rgba(255, 170, 48, 0.1)', padding: '6px 16px', borderRadius: 20, border: '1px solid rgba(255, 170, 48, 0.3)' }}>
-          SYNTHROPHOS // AI OPERATING SYSTEM
+          Autonomous Operating System
         </div>
 
         <h1 style={{ fontSize: 48, fontWeight: 800, color: '#fff5e6', lineHeight: 1.15, letterSpacing: '-0.02em', maxWidth: 900 }}>
@@ -122,7 +122,7 @@ export default function AboutFaqPage() {
 
         <div style={{ display: 'flex', gap: 16, marginTop: 12 }}>
           <Button variant="primary" size="md" onClick={() => navigate('/dashboard')} style={{ fontFamily: 'var(--font-mono)', fontWeight: 'bold', padding: '12px 28px' }}>
-            [ GET STARTED ]
+            Get Started
           </Button>
           <a href="#capabilities" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '12px 28px', border: '1px solid rgba(255, 170, 48, 0.3)', borderRadius: 4, color: '#ffcc66', textDecoration: 'none', fontSize: 13, fontFamily: 'var(--font-mono)' }}>
             Explore Syntrophos
@@ -170,7 +170,7 @@ export default function AboutFaqPage() {
             { step: '04', title: 'RESULT', desc: 'Work completed, information updated, and state kept perfectly in sync.' },
           ].map((m) => (
             <div key={m.step} style={{ background: 'rgba(14, 7, 1, 0.8)', border: '1px solid rgba(255, 170, 48, 0.25)', borderRadius: 8, padding: '24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ fontSize: 12, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>{m.step} //</div>
+              <div style={{ fontSize: 12, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>{m.step}</div>
               <div style={{ fontSize: 16, fontWeight: 'bold', color: '#ffcc66' }}>{m.title}</div>
               <div style={{ fontSize: 12, color: '#d99a4e', lineHeight: 1.6 }}>{m.desc}</div>
             </div>
@@ -249,7 +249,7 @@ export default function AboutFaqPage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
             <div style={{ background: 'rgba(16, 8, 2, 0.9)', border: '1px solid rgba(255, 170, 48, 0.3)', borderRadius: 8, padding: '32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ fontSize: 12, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>PERSONAL MODE //</div>
+              <div style={{ fontSize: 12, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>Personal Workspace</div>
               <div style={{ fontSize: 20, fontWeight: 'bold', color: '#ffcc66' }}>Personal Life &amp; Execution</div>
               <div style={{ fontSize: 13, color: '#d99a4e', lineHeight: 1.6 }}>
                 Organize your life, tasks, schedule, notes, communications, and personal knowledge vault.
@@ -257,7 +257,7 @@ export default function AboutFaqPage() {
             </div>
 
             <div style={{ background: 'rgba(16, 8, 2, 0.9)', border: '1px solid rgba(255, 170, 48, 0.3)', borderRadius: 8, padding: '32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ fontSize: 12, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>BUSINESS MODE //</div>
+              <div style={{ fontSize: 12, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>Business Workspace</div>
               <div style={{ fontSize: 20, fontWeight: 'bold', color: '#ffcc66' }}>Team Operations &amp; Workflows</div>
               <div style={{ fontSize: 13, color: '#d99a4e', lineHeight: 1.6 }}>
                 Coordinate projects, people, communications, agents, workflows, and operational knowledge matrices.
@@ -335,7 +335,7 @@ export default function AboutFaqPage() {
           Bring your work, context, and AI into one connected operational environment.
         </p>
         <Button variant="primary" size="md" onClick={() => navigate('/dashboard')} style={{ fontFamily: 'var(--font-mono)', fontWeight: 'bold', padding: '12px 32px', marginTop: 12 }}>
-          [ GET STARTED NOW ]
+          Get Started
         </Button>
       </section>
 

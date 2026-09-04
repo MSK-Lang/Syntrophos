@@ -97,11 +97,11 @@ export function CommandCenter({
       >
         {/* Header Telemetry Bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontFamily: 'monospace', color: '#ffaa30', letterSpacing: '0.12em' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontFamily: 'monospace', color: '#ffaa30', letterSpacing: '0.08em', fontWeight: 600 }}>
             <span style={{ color: isListening ? '#ff5533' : '#ffaa30', display: 'inline-flex', alignItems: 'center' }}>
               {isListening ? <IconMic width={12} height={12} /> : <IconCore width={12} height={12} />}
             </span>
-            <span>SYNTHROPHOS // OPERATIONAL COMMAND SURFACE</span>
+            <span>Command</span>
             {activeDirective && (
               <span
                 style={{
@@ -141,7 +141,7 @@ export function CommandCenter({
               <span>{isListening ? 'RECORDING…' : 'VOICE'}</span>
             </button>
             <span style={{ border: '1px solid rgba(255, 170, 48, 0.3)', padding: '2px 6px', borderRadius: 4 }}>⌘K</span>
-            <span style={{ border: '1px solid rgba(255, 170, 48, 0.3)', padding: '2px 6px', borderRadius: 4 }}>↵ DISPATCH</span>
+            <span style={{ border: '1px solid rgba(255, 170, 48, 0.3)', padding: '2px 6px', borderRadius: 4 }}>↵ Run</span>
           </div>
         </div>
 
@@ -158,7 +158,7 @@ export function CommandCenter({
             placeholder={placeholder}
             className="dashboard-command-input"
             style={{
-              fontSize: '16px',
+              fontSize: '15px',
               fontWeight: 500,
             }}
           />
@@ -181,7 +181,7 @@ export function CommandCenter({
               transition: 'all 150ms ease',
             }}
           >
-            DISPATCH INTENT
+            Run
           </button>
         </form>
 
@@ -209,8 +209,8 @@ export function CommandCenter({
 
       {/* Contextual AI Intent Suggestions */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <div style={{ fontSize: 10, color: '#885522', fontFamily: 'monospace', letterSpacing: '0.12em' }}>
-          SUGGESTED INTENTS // {mode.toUpperCase()} CONTEXT:
+        <div style={{ fontSize: 11, color: '#ffaa30', fontWeight: 600, fontFamily: 'monospace', letterSpacing: '0.08em' }}>
+          Suggestions
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {currentIntents.map((intent) => (

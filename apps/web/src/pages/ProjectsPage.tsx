@@ -161,7 +161,7 @@ export default function ProjectsPage() {
       <PageHeader
         variant="wide"
         icon={<IconFolder width={22} height={22} />}
-        title="PROJECTS // CONNECTIVE WORKSPACE MATRIX"
+        title="Projects"
         subtitle="Everything you're working on, in one place."
         actions={[
           {
@@ -248,7 +248,7 @@ export default function ProjectsPage() {
           <div style={{ padding: '60px', textAlign: 'center' }}>
             <EmptyState
               icon={<IconFolder width={36} height={36} />}
-              title="NO PROJECTS"
+              title="No projects"
               description="Connect tasks, notes, calendar events, and agents into unified project workspaces."
               action={{ label: 'Create project', onClick: () => setIsCreateOpen(true) }}
             />
@@ -406,7 +406,7 @@ function ProjectDetailDrawer({
       <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.95)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>
           <IconFolder width={14} height={14} />
-          <span>PROJECT WORKSPACE // {project.name.toUpperCase()}</span>
+          <span>Project Details</span>
         </div>
         <button type="button" onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#885522', cursor: 'pointer' }}>
           <IconX width={16} height={16} />

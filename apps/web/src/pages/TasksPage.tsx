@@ -195,12 +195,12 @@ export default function TasksPage() {
       <PageHeader
         variant="wide"
         icon={<IconTasks width={22} height={22} />}
-        title="TASKS // EXECUTION WORKSPACE"
-        subtitle={`${activeCount} ACTIVE · ${completedCount} COMPLETED · ${agentCount} AGENT MANAGED`}
+        title="Tasks"
+        subtitle={`${activeCount} active · ${completedCount} completed · ${agentCount} agent managed`}
         actions={[
           {
             id: 'toggle-view',
-            label: view === 'board' ? '☰ LIST VIEW' : '▦ BOARD VIEW',
+            label: view === 'board' ? 'List View' : 'Board View',
             variant: 'ghost',
             onAction: () => setView((v) => (v === 'board' ? 'list' : 'board')),
           },
@@ -260,16 +260,16 @@ export default function TasksPage() {
       {/* Main Workspace Body */}
       <div style={{ padding: '24px', flex: '1 1 auto' }}>
         {loading ? (
-          <PageLoader label="LOADING TASK WORKSPACE…" />
+          <PageLoader label="Loading tasks…" />
         ) : error ? (
-          <ErrorState title="FAILED TO LOAD TASKS" error={error.message} />
+          <ErrorState title="Failed to load tasks" error={error.message} />
         ) : filteredTasks.length === 0 ? (
           <EmptyState
             size="lg"
             tone="default"
             icon={<IconTasks width={36} height={36} />}
-            title="No tasks match criteria"
-            description="Clear your filter parameters or create a new task to populate the execution pipeline."
+            title="No tasks found"
+            description="Clear your filter or create a new task."
             action={{ label: 'Create new task', onClick: () => setIsCreateModalOpen(true) }}
           />
         ) : view === 'board' ? (
@@ -586,7 +586,7 @@ function TaskDetailDrawer({
       <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.95)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#ffaa30', fontWeight: 'bold' }}>
           <IconTasks width={14} height={14} />
-          <span>TASK DETAIL // {task.id.slice(0, 8).toUpperCase()}</span>
+          <span>Task Details</span>
         </div>
         <button
           type="button"

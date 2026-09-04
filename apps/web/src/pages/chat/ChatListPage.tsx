@@ -233,9 +233,9 @@ export function SyntrophosChatWorkspace() {
       <aside className="chat-conversations" style={{ background: '#070401', borderRight: '1px solid rgba(255, 170, 48, 0.25)', width: 300, display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '16px', borderBottom: '1px solid rgba(255, 170, 48, 0.25)', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 13, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.12em', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.08em', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: 8 }}>
               <IconChat width={16} height={16} />
-              <span>SYNTHROPHOS // CHAT</span>
+              <span>Chat</span>
             </div>
             <button
               type="button"
@@ -308,10 +308,10 @@ export function SyntrophosChatWorkspace() {
         <header style={{ padding: '14px 24px', borderBottom: '1px solid rgba(255, 170, 48, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.9)' }}>
           <div>
             <div style={{ fontSize: 14, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.04em' }}>
-              {isNewOrNoConversation ? 'SYNTHROPHOS // CHAT WORKSPACE' : (conversation?.title ?? 'Active Conversation')}
+              {isNewOrNoConversation ? 'New Conversation' : (conversation?.title ?? 'Conversation')}
             </div>
             <div style={{ fontSize: 10, color: '#885522', fontFamily: 'monospace', marginTop: 2 }}>
-              MODEL: SYNTROPHOS COGNITION V1.0 · {isNewOrNoConversation ? 'STANDBY MODE' : `${messages.length} MESSAGES`}
+              {isNewOrNoConversation ? 'Ready' : `${messages.length} messages`}
             </div>
           </div>
 
@@ -338,11 +338,11 @@ export function SyntrophosChatWorkspace() {
         {/* Content Body: NO_CONVERSATION vs ACTIVE vs ERROR */}
         <div ref={scrollRef} style={{ flex: '1 1 auto', overflowY: 'auto', padding: '24px 32px', display: 'flex', flexDirection: 'column' }}>
           {threadLoading ? (
-            <PageLoader label="INITIALIZING NEURAL CHAT STREAM…" />
+            <PageLoader label="Loading messages…" />
           ) : error ? (
             /* REAL Exception Error State Only */
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', margin: 'auto', maxWidth: 480, textAlign: 'center', gap: 14 }}>
-              <ErrorState title="FAILED TO LOAD MESSAGES" error={error.message} />
+              <ErrorState title="Failed to load messages" error={error.message} />
               <button
                 type="button"
                 onClick={() => {
@@ -385,8 +385,8 @@ export function SyntrophosChatWorkspace() {
                 <IconCore width={24} height={24} />
               </div>
 
-              <div style={{ fontSize: 10, letterSpacing: '0.22em', color: '#885522', fontFamily: 'monospace', marginBottom: 6 }}>
-                SYNTHROPHOS // CHAT
+              <div style={{ fontSize: 10, letterSpacing: '0.12em', color: '#ffaa30', fontWeight: 600, fontFamily: 'monospace', marginBottom: 6 }}>
+                Chat
               </div>
 
               <h2 style={{ fontSize: 22, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.03em', margin: '0 0 8px 0', textShadow: '0 0 10px rgba(255, 170, 48, 0.4)' }}>
@@ -594,13 +594,13 @@ export function SyntrophosChatWorkspace() {
                     cursor: input.trim() ? 'pointer' : 'default',
                   }}
                 >
-                  [ ↵ DISPATCH ]
+                  Send
                 </button>
               </div>
             </div>
 
             <div style={{ fontSize: 10, color: '#885522', fontFamily: 'monospace', textAlign: 'center' }}>
-              SYNTROPHOS CHAT // PRESS ↵ TO DISPATCH · ⇧↵ FOR NEWLINE
+              Press ↵ to send · ⇧↵ for newline
             </div>
           </div>
         </div>
@@ -707,7 +707,7 @@ function ChatMessageRow({
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, fontFamily: 'monospace', color: '#ffaa30' }}>
         <IconBot width={14} height={14} />
-        <span>SYNTHROPHOS // ASSISTANT</span>
+        <span>Syntrophos</span>
         <span style={{ fontSize: 10, color: '#885522', marginLeft: 'auto' }}>
           {new Date(message.audit?.createdAt ?? Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
@@ -718,7 +718,7 @@ function ChatMessageRow({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontWeight: 'bold', color: '#ffaa30', fontFamily: 'monospace' }}>
             <span className="island-pulse-orb" style={{ width: 5, height: 5 }} />
-            <span>PROCESS STATE: COMPLETE</span>
+            <span>Response ready</span>
           </div>
           <button
             type="button"

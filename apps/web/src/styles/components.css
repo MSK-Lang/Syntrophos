@@ -327,12 +327,16 @@
 .ui-input-wrap--md { min-height: 40px; padding: 0 var(--space-3); font-size: var(--font-size-base); }
 .ui-input-wrap--lg { min-height: 48px; padding: 0 var(--space-4); font-size: var(--font-size-md); }
 
-.ui-input-wrap input {
+.ui-input-wrap input,
+.ui-input-wrap input:focus,
+.ui-input-wrap input:focus-visible,
+.ui-input-wrap input:active {
   flex: 1 1 auto;
   min-width: 0;
-  background: transparent;
-  border: none;
-  outline: none;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   color: var(--color-text);
   padding: var(--space-2) 0;
   font-size: inherit;
@@ -480,7 +484,7 @@
   padding: var(--space-5);
   background: var(--color-overlay);
   backdrop-filter: blur(4px);
-  animation: ui-fade-in var(--transition-base) both;
+  animation: ui-backdrop-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .ui-dialog {
@@ -493,7 +497,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
-  animation: ui-dialog-in var(--transition-base) both;
+  animation: ui-dialog-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
   overflow: hidden;
 }
 .ui-dialog[data-size='lg'] { max-width: 760px; }
@@ -549,7 +553,8 @@
   box-shadow: var(--shadow-lg);
   padding: var(--space-2);
   z-index: 80;
-  animation: ui-pop-in var(--transition-fast) both;
+  animation: ui-popover-in 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top;
 }
 .ui-dropdown--end .ui-dropdown__content { right: 0; }
 .ui-dropdown--start .ui-dropdown__content { left: 0; }
@@ -814,16 +819,88 @@
  *  ANIMATIONS
  * ──────────────────────────────────────────────────────────────────────────── */
 
+@keyframes ui-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ui-backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes ui-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ui-dialog-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+}
+
+@keyframes ui-drawer-right-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ui-drawer-left-in {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ui-popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ui-popover-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.98);
+  }
+}
+
 @keyframes ui-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-@keyframes ui-dialog-in {
-  from { opacity: 0; transform: scale(0.98) translateY(4px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
 @keyframes ui-pop-in {
-  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  from { opacity: 0; transform: translateY(-2px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes ui-slide-down {
@@ -831,11 +908,57 @@
   to { opacity: 1; max-height: 600px; }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+ *  GLOBAL SHARED MICRO-INTERACTION CLASSES
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.ui-backdrop,
+.task-modal-overlay,
+.context-drawer-overlay {
+  animation: ui-backdrop-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ui-modal,
+.task-modal {
+  animation: ui-dialog-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ui-drawer--right {
+  animation: ui-drawer-right-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ui-drawer--left {
+  animation: ui-drawer-left-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ui-popover {
+  animation: ui-popover-in 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+  .ui-dialog__backdrop,
+  .task-modal-overlay,
+  .context-drawer-overlay,
+  .ui-backdrop,
+  .ui-dialog,
+  .task-modal,
+  .ui-modal,
+  .ui-drawer--right,
+  .ui-drawer--left,
+  .task-detail-drawer,
+  .context-drawer-panel,
+  .panel--rail,
+  .ui-dropdown__content,
+  .ui-popover,
+  .panel--notif {
+    animation: ui-backdrop-in 60ms ease-out both !important;
+    transform: none !important;
   }
 }
 
@@ -968,12 +1091,7 @@
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
-  animation: ui-slide-left 200ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes ui-slide-left {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  animation: ui-drawer-right-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .task-modal-overlay {

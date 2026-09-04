@@ -34,76 +34,76 @@ const STATE_CONFIG: Record<
   }
 > = {
   idle: {
-    label: 'STANDBY // OBSERVING',
+    label: 'Ready',
     primaryColor: '#00f0ff',
     secondaryColor: '#0284c7',
     glowColor: 'rgba(0, 240, 255, 0.35)',
     pulseSpeed: '4.5s',
     ringSpeed: '28s',
-    statusText: 'ALL SUBSYSTEMS NOMINAL',
+    statusText: 'All systems nominal',
   },
   listening: {
-    label: 'AUDIO INGEST // ACTIVE',
+    label: 'Listening',
     primaryColor: '#38bdf8',
     secondaryColor: '#818cf8',
     glowColor: 'rgba(56, 189, 248, 0.5)',
     pulseSpeed: '1.4s',
     ringSpeed: '12s',
-    statusText: 'VOICE STREAM CAPTURE',
+    statusText: 'Listening to voice',
   },
   thinking: {
-    label: 'NEURAL COGNITION // SYNTHESIS',
+    label: 'Thinking',
     primaryColor: '#a78bfa',
     secondaryColor: '#6366f1',
     glowColor: 'rgba(167, 139, 250, 0.55)',
     pulseSpeed: '1.8s',
     ringSpeed: '16s',
-    statusText: 'CROSS-MEMORY REASONING',
+    statusText: 'Processing request',
   },
   planning: {
-    label: 'TASK DECOMPOSITION',
+    label: 'Planning',
     primaryColor: '#fbbf24',
     secondaryColor: '#f59e0b',
     glowColor: 'rgba(251, 191, 36, 0.5)',
     pulseSpeed: '2.2s',
     ringSpeed: '18s',
-    statusText: 'GRAPH PIPELINE GENERATION',
+    statusText: 'Generating plan',
   },
   executing: {
-    label: 'AUTONOMOUS EXECUTION',
+    label: 'Executing',
     primaryColor: '#10b981',
     secondaryColor: '#059669',
     glowColor: 'rgba(16, 185, 129, 0.55)',
     pulseSpeed: '1.2s',
     ringSpeed: '8s',
-    statusText: 'DISPATCHING AGENT WORKERS',
+    statusText: 'Running agent tasks',
   },
   waiting_approval: {
-    label: 'CONFIRMATION REQUIRED',
+    label: 'Needs Approval',
     primaryColor: '#f59e0b',
     secondaryColor: '#d97706',
     glowColor: 'rgba(245, 158, 11, 0.65)',
     pulseSpeed: '1.6s',
     ringSpeed: '22s',
-    statusText: 'AWAITING OPERATOR INPUT',
+    statusText: 'Awaiting confirmation',
   },
   success: {
-    label: 'DIRECTIVE COMPLETED',
+    label: 'Completed',
     primaryColor: '#34d399',
     secondaryColor: '#10b981',
     glowColor: 'rgba(52, 211, 153, 0.6)',
     pulseSpeed: '2s',
     ringSpeed: '32s',
-    statusText: 'ARTIFACT COMMITTED TO MEMORY',
+    statusText: 'Task finished successfully',
   },
   error: {
-    label: 'ANOMALY DETECTED',
+    label: 'Error',
     primaryColor: '#f43f5e',
     secondaryColor: '#e11d48',
     glowColor: 'rgba(244, 63, 94, 0.65)',
     pulseSpeed: '0.9s',
     ringSpeed: '6s',
-    statusText: 'ERROR IN PROCESS THREAD',
+    statusText: 'Encountered an issue',
   },
 };
 
@@ -182,7 +182,7 @@ export function SyntrophosCore({
           letterSpacing: '0.12em',
         }}
       >
-        <span>CORE // V1.0-SPATIAL</span>
+        <span>Core · v1.0</span>
         <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>|</span>
         <span style={{ color: cfg.primaryColor }}>{fps} FPS</span>
         <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>|</span>
@@ -489,7 +489,7 @@ export function SyntrophosCore({
           {activeTask ? (
             <span style={{ color: 'var(--color-text-muted)' }}>{activeTask}</span>
           ) : activeAgentName ? (
-            <span>AGENT RUNNING: {activeAgentName.toUpperCase()}</span>
+            <span>Agent active: {activeAgentName}</span>
           ) : (
             <span>{cfg.statusText}</span>
           )}

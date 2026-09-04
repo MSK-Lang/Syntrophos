@@ -215,7 +215,7 @@ export default function WorkflowsPage({ embedInWorkspace = false }: { readonly e
         <PageHeader
           variant="wide"
           icon={<IconWorkflow width={22} height={22} />}
-          title="WORKFLOWS // AUTOMATION & AGENT EXECUTION"
+          title="Workflows"
           subtitle="Automate recurring work across your workspace."
           actions={[
             {
@@ -309,7 +309,7 @@ export default function WorkflowsPage({ embedInWorkspace = false }: { readonly e
           <div style={{ padding: '60px', textAlign: 'center' }}>
             <EmptyState
               icon={<IconWorkflow width={36} height={36} />}
-              title="NO WORKFLOWS YET"
+              title="No workflows yet"
               description="Automate the repetitive work you don't want to think about twice."
               action={{ label: 'Create workflow', onClick: () => setIsBuilderOpen(true) }}
             />
@@ -703,7 +703,7 @@ function WorkflowDetailDrawer({
       <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.95)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>
           <IconWorkflow width={14} height={14} />
-          <span>WORKFLOW DETAIL // {workflow.id.toUpperCase()}</span>
+          <span>Workflow Details</span>
         </div>
         <button type="button" onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#885522', cursor: 'pointer' }}>
           <IconX width={16} height={16} />

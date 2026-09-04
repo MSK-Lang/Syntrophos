@@ -149,7 +149,7 @@ export function SyntrophosHUDPanels({
             onMouseEnter={(e) => (e.currentTarget.style.color = '#ffaa30')}
             onMouseLeave={(e) => (e.currentTarget.style.color = activeDrawer === 'tasks' ? '#ffaa30' : '#885522')}
           >
-            TASKS
+            Tasks
           </button>
 
           <button
@@ -170,7 +170,7 @@ export function SyntrophosHUDPanels({
             onMouseEnter={(e) => (e.currentTarget.style.color = '#ffaa30')}
             onMouseLeave={(e) => (e.currentTarget.style.color = activeDrawer === 'activity' ? '#ffaa30' : '#885522')}
           >
-            ACTIVITY
+            Activity
           </button>
 
           <button
@@ -194,7 +194,7 @@ export function SyntrophosHUDPanels({
             onMouseEnter={(e) => (e.currentTarget.style.color = '#ffaa30')}
             onMouseLeave={(e) => (e.currentTarget.style.color = activeDrawer === 'notifications' ? '#ffaa30' : '#885522')}
           >
-            <span>NOTIFICATIONS</span>
+            <span>Notifications</span>
             {unreadNotifications.length > 0 && (
               <span
                 style={{
@@ -230,7 +230,7 @@ export function SyntrophosHUDPanels({
             onMouseEnter={(e) => (e.currentTarget.style.color = '#ffaa30')}
             onMouseLeave={(e) => (e.currentTarget.style.color = '#885522')}
           >
-            DASHBOARD
+            Dashboard
           </Link>
 
           {/* SECONDARY MENU (⋮) */}
@@ -257,6 +257,7 @@ export function SyntrophosHUDPanels({
             {/* DROPDOWN MENU */}
             {showMenu && (
               <div
+                className="ui-dropdown__content"
                 style={{
                   position: 'absolute',
                   top: 36,
@@ -271,7 +272,6 @@ export function SyntrophosHUDPanels({
                   display: 'flex',
                   flexDirection: 'column',
                   zIndex: 50,
-                  animation: 'fadeIn 140ms ease',
                 }}
               >
                 {/* Status snippet */}
@@ -392,6 +392,7 @@ export function SyntrophosHUDPanels({
        * ──────────────────────────────────────────────────────────────────────────── */}
       {activeDrawer !== 'none' && (
         <aside
+          className="ui-drawer--right"
           style={{
             position: 'fixed',
             top: 56,
@@ -408,7 +409,6 @@ export function SyntrophosHUDPanels({
             flexDirection: 'column',
             overflow: 'hidden',
             pointerEvents: 'auto',
-            animation: 'fadeIn 180ms ease',
           }}
         >
           {/* DRAWER HEADER */}
@@ -423,9 +423,9 @@ export function SyntrophosHUDPanels({
             }}
           >
             <span style={{ color: '#ffaa30', fontWeight: 'bold', fontSize: 11, fontFamily: 'var(--font-mono)', letterSpacing: '0.1em' }}>
-              {activeDrawer === 'tasks' && 'TASKS // TODAY'}
-              {activeDrawer === 'activity' && 'ACTIVITY TIMELINE'}
-              {activeDrawer === 'notifications' && 'NOTIFICATIONS'}
+              {activeDrawer === 'tasks' && "Today's Tasks"}
+              {activeDrawer === 'activity' && 'Recent Activity'}
+              {activeDrawer === 'notifications' && 'Notifications'}
             </span>
 
             <button

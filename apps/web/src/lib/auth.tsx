@@ -93,7 +93,7 @@ export const GUEST_USER: User = {
 
 export const GUEST_WORKSPACE: Workspace = {
   id: 'workspace-demo',
-  name: 'Syntrophos Demo Environment',
+  name: 'Personal Workspace',
   workspaceType: 'personal',
   subscriptionPlan: 'demo',
   role: 'operator',

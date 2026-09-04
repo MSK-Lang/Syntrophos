@@ -54,11 +54,11 @@ export function ContextStreams({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.12em', fontFamily: 'monospace' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.08em', fontFamily: 'monospace' }}>
               <span className="island-pulse-orb" />
-              <span>SYNTHROPHOS // ACTIVE AGENT WORKSPACE</span>
+              <span>Active Agents</span>
             </div>
-            <span className="ai-badge ai-badge--executing">● {activeRuns.length} EXECUTING</span>
+            <span className="ai-badge ai-badge--executing">● {activeRuns.length} running</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -173,11 +173,11 @@ export function ContextStreams({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.1em', fontFamily: 'monospace' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.08em', fontFamily: 'monospace' }}>
               <span>!</span>
-              <span>SYNTHROPHOS // PROPOSED ACTION</span>
+              <span>Proposed Action</span>
             </div>
-            <span className="ai-badge ai-badge--proposed">NEEDS APPROVAL</span>
+            <span className="ai-badge ai-badge--proposed">Needs Approval</span>
           </div>
 
           {!approvedActionIds.includes('action-leads') ? (
@@ -263,12 +263,12 @@ export function ContextStreams({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.12em', fontFamily: 'monospace' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.08em', fontFamily: 'monospace' }}>
               <IconTasks width={14} height={14} />
-              <span>TODAY // WORKSPACE</span>
+              <span>Today's Tasks</span>
             </div>
             <span style={{ fontSize: 10, color: '#885522', fontFamily: 'monospace' }}>
-              3 ITEMS NEED ATTENTION
+              3 need attention
             </span>
           </div>
 
@@ -398,12 +398,12 @@ export function ContextStreams({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.12em', fontFamily: 'monospace' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.08em', fontFamily: 'monospace' }}>
               <span>□</span>
-              <span>CONTEXT &amp; KNOWLEDGE VAULT</span>
+              <span>Context &amp; Knowledge</span>
             </div>
             <span style={{ fontSize: 10, color: '#885522', fontFamily: 'monospace' }}>
-              CLICK SOURCE FOR DRAWER
+              Connected sources
             </span>
           </div>
 

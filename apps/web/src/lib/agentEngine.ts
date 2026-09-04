@@ -230,14 +230,14 @@ export class SyntrophosAgentEngine {
 
     // --- CONVERSATIONAL / GENERAL FALLBACK ---
     demoStore.setOrbState('ACTING');
-    demoStore.addActivity('Cognitive response synthesized', `Parsed query: "${prompt.slice(0, 32)}..."`, 'agent');
+    demoStore.addActivity('Response generated', `Parsed query: "${prompt.slice(0, 32)}..."`, 'agent');
 
     await new Promise((res) => setTimeout(res, 500));
     demoStore.setOrbState('IDLE');
 
     return {
-      text: `Directive received: "${prompt}". Syntrophos neural core is active. I can schedule reminders, manage tasks, coordinate active monitors, or track your workspace changes.`,
-      actionSummary: `Processed directive: "${prompt.slice(0, 40)}"`,
+      text: `I've received your request: "${prompt}". I can schedule reminders, manage tasks, coordinate monitors, or track your workspace changes.`,
+      actionSummary: `Processed request: "${prompt.slice(0, 40)}"`,
       state: 'IDLE',
     };
   }

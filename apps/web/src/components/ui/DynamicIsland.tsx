@@ -59,8 +59,8 @@ export function DynamicIsland({
                 <strong style={{ color: '#34d399' }}>COMPLETE:</strong> {activeRun.taskTitle}
               </span>
             ) : (
-              <span style={{ color: '#d99a4e', letterSpacing: '0.12em' }}>
-                <strong style={{ color: '#ffaa30' }}>SYNTHROPHOS</strong> // ALL SUBSYSTEMS NOMINAL
+              <span style={{ color: '#d99a4e', letterSpacing: '0.06em' }}>
+                <strong style={{ color: '#ffaa30' }}>Ready</strong> · All systems nominal
               </span>
             )}
             <span style={{ color: '#885522', fontSize: 10, marginLeft: 4 }}>▾</span>
@@ -71,8 +71,8 @@ export function DynamicIsland({
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span className="island-pulse-orb" />
-                <span style={{ fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.1em', fontFamily: 'monospace' }}>
-                  SYNTHROPHOS LIVE ACTIVITY
+                <span style={{ fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.08em', fontFamily: 'monospace' }}>
+                  Live Activity
                 </span>
               </div>
               <button

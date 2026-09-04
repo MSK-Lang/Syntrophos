@@ -138,7 +138,7 @@ export function Topbar({
         </nav>
       </div>
 
-      {/* CENTER: Universal Search & Command Surface */}
+      {/* CENTER: Universal Search */}
       <div className="shell-topbar__search" style={{ flex: '1 1 auto', maxWidth: 540, margin: '0 20px' }}>
         <button
           type="button"
@@ -152,7 +152,7 @@ export function Topbar({
             background: 'rgba(20, 10, 2, 0.8)',
             border: '1px solid rgba(255, 170, 48, 0.3)',
             borderRadius: 6,
-            padding: '6px 12px',
+            padding: '6px 14px',
             color: '#d99a4e',
             fontSize: 12,
             fontFamily: 'var(--font-sans)',
@@ -162,10 +162,10 @@ export function Topbar({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <IconSearch width={14} height={14} style={{ color: '#ffaa30' }} />
-            <span>Search or ask Syntrophos... (tasks, notes, chats, calendar, agents…)</span>
+            <span>Search or ask Syntrophos...</span>
           </div>
           <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', background: 'rgba(255, 170, 48, 0.15)', border: '1px solid rgba(255, 170, 48, 0.3)', padding: '1px 6px', borderRadius: 4, color: '#ffcc66' }}>
-            {typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘ K' : 'Ctrl K'}
+            {typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
           </span>
         </button>
       </div>

@@ -23,28 +23,28 @@ export function ContextDrawerModal({
 
   const titles: Record<Exclude<ContextSourceType, null>, { name: string; subtitle: string; Icon: IconComponent }> = {
     gmail: {
-      name: 'GMAIL CONTEXT STREAM',
-      subtitle: '12 UNREAD MESSAGES · 3 HIGHLY RELEVANT',
+      name: 'Gmail',
+      subtitle: '12 unread · 3 relevant',
       Icon: IconMail,
     },
     calendar: {
-      name: 'CALENDAR & TEMPORAL SCHEDULE',
-      subtitle: `${events.length} UPCOMING EVENTS · 1 POTENTIAL CONFLICT`,
+      name: 'Calendar',
+      subtitle: `${events.length} upcoming events`,
       Icon: IconCalendar,
     },
     github: {
-      name: 'GITHUB CODE BASE ENGINE',
-      subtitle: 'SYNTACTIC REPOSITORY TRACKING · MAIN BRANCH',
+      name: 'GitHub',
+      subtitle: 'Repository tracking · main',
       Icon: IconCode,
     },
     vault: {
-      name: 'OBSIDIAN KNOWLEDGE VAULT',
-      subtitle: `${notes.length} INDEXED MARKDOWN NODES · SYNCED`,
+      name: 'Notes & Vault',
+      subtitle: `${notes.length} indexed notes · Synced`,
       Icon: IconNotes,
     },
     projects: {
-      name: 'ACTIVE PROJECT WORKSPACES',
-      subtitle: '3 ACTIVE PIPELINES IN FLIGHT',
+      name: 'Projects',
+      subtitle: '3 active projects',
       Icon: IconCore,
     },
   };

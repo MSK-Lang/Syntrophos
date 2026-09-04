@@ -125,7 +125,7 @@ export default function HelpPage() {
       <section style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         <div>
           <div style={{ fontSize: 11, color: 'var(--color-primary-500)', fontWeight: 'bold', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>
-            GUIDED ONBOARDING SEQUENCE //
+            Guided Onboarding
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>Recommended Steps</h2>
         </div>
@@ -197,7 +197,7 @@ export default function HelpPage() {
       <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: 32, display: 'flex', flexDirection: 'column', gap: 20 }}>
         <div>
           <div style={{ fontSize: 11, color: 'var(--color-primary-500)', fontWeight: 'bold', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>
-            SYSTEM MODULES //
+            System Modules
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>Working with Syntrophos</h2>
         </div>

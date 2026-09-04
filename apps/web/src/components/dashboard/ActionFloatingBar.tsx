@@ -41,46 +41,46 @@ export function ActionFloatingBar({
   }, [navigate, onQuickTask, onQuickAgent, onQuickNote]);
 
   return (
-    <div className="floating-action-bar" role="toolbar" aria-label="AI Operating Command Dock">
-      <Link to="/core" className="action-bar-btn" title="Enter Core (⌘1)">
+    <div className="floating-action-bar" role="toolbar" aria-label="Action Dock">
+      <Link to="/core" className="action-bar-btn" title="Open Core (⌘1)">
         <span style={{ color: '#ffaa30', display: 'inline-flex', alignItems: 'center' }}>
           <IconCore width={13} height={13} />
         </span>
-        <span>CORE</span>
+        <span>Core</span>
         <span style={{ fontSize: 9, color: '#885522', marginLeft: 2 }}>⌘1</span>
       </Link>
 
       <div style={{ width: 1, height: 16, background: 'rgba(255, 170, 48, 0.2)' }} />
 
-      <button type="button" onClick={onQuickTask} className="action-bar-btn" title="Create Deliverable Task (⌘2)">
+      <button type="button" onClick={onQuickTask} className="action-bar-btn" title="Create Task (⌘2)">
         <span style={{ color: '#ffaa30', display: 'inline-flex', alignItems: 'center' }}>
           <IconTasks width={13} height={13} />
         </span>
-        <span>NEW TASK</span>
+        <span>New Task</span>
         <span style={{ fontSize: 9, color: '#885522', marginLeft: 2 }}>⌘2</span>
       </button>
 
-      <button type="button" onClick={onQuickAgent} className="action-bar-btn" title="Deploy Autonomous Agent (⌘3)">
+      <button type="button" onClick={onQuickAgent} className="action-bar-btn" title="Run Agent (⌘3)">
         <span style={{ color: '#ffaa30', display: 'inline-flex', alignItems: 'center' }}>
           <IconBot width={13} height={13} />
         </span>
-        <span>RUN AGENT</span>
+        <span>Run Agent</span>
         <span style={{ fontSize: 9, color: '#885522', marginLeft: 2 }}>⌘3</span>
       </button>
 
-      <button type="button" onClick={onQuickNote} className="action-bar-btn" title="Capture Knowledge Note (⌘4)">
+      <button type="button" onClick={onQuickNote} className="action-bar-btn" title="New Note (⌘4)">
         <span style={{ color: '#ffaa30', display: 'inline-flex', alignItems: 'center' }}>
           <IconNotes width={13} height={13} />
         </span>
-        <span>NEW NOTE</span>
+        <span>New Note</span>
         <span style={{ fontSize: 9, color: '#885522', marginLeft: 2 }}>⌘4</span>
       </button>
 
-      <Link to="/chat" className="action-bar-btn" title="Open Neural Chat (⌘5)">
+      <Link to="/chat" className="action-bar-btn" title="Open Chat (⌘5)">
         <span style={{ color: '#ffaa30', display: 'inline-flex', alignItems: 'center' }}>
           <IconChat width={13} height={13} />
         </span>
-        <span>NEURAL CHAT</span>
+        <span>Chat</span>
         <span style={{ fontSize: 9, color: '#885522', marginLeft: 2 }}>⌘5</span>
       </Link>
     </div>

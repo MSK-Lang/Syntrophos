@@ -34,8 +34,8 @@ export function MorphingDetailModal({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span className="island-pulse-orb" />
-            <span style={{ fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.12em', fontFamily: 'monospace' }}>
-              {isAgentRun ? 'SYNTHROPHOS // AGENT EXECUTION TRACE' : 'SYNTHROPHOS // DELIVERABLE DETAIL'}
+            <span style={{ fontSize: 12, fontWeight: 'bold', color: '#ffaa30', letterSpacing: '0.08em', fontFamily: 'monospace' }}>
+              {isAgentRun ? 'Agent Execution' : 'Task Details'}
             </span>
           </div>
 
@@ -46,12 +46,14 @@ export function MorphingDetailModal({
               background: 'transparent',
               border: 'none',
               color: '#885522',
-              fontSize: 13,
+              fontSize: 14,
               cursor: 'pointer',
               fontFamily: 'monospace',
+              padding: '2px 6px',
             }}
+            title="Close"
           >
-            [ ESC ✕ ]
+            ✕
           </button>
         </div>
 

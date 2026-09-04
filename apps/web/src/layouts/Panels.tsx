@@ -320,7 +320,7 @@ export function CommandPalette({
           <input
             ref={inputRef}
             className="cmd-input"
-            placeholder="Search Syntrophos..."
+            placeholder="Search or ask Syntrophos..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKey}
@@ -329,7 +329,7 @@ export function CommandPalette({
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
-            style={{ fontSize: 14, color: '#fff5e6' }}
+            style={{ fontSize: 14, color: '#fff5e6', background: 'transparent', border: 'none', outline: 'none' }}
           />
           <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', background: 'rgba(255, 170, 48, 0.15)', border: '1px solid rgba(255, 170, 48, 0.3)', padding: '2px 6px', borderRadius: 4, color: '#ffcc66' }}>
             {kbdShortcut}

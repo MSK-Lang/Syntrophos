@@ -169,10 +169,10 @@ export default function DashboardPage() {
         {/* Operational Context Title & Mode Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 170, 48, 0.25)', paddingBottom: 14 }}>
           <div>
-            <div style={{ fontSize: 10, letterSpacing: '0.25em', color: '#885522', marginBottom: 2, fontFamily: 'var(--font-mono)' }}>
-              {wsName.toUpperCase()} // OPERATIONAL ENVIRONMENT ({mode.toUpperCase()})
+            <div style={{ fontSize: 11, letterSpacing: '0.08em', color: '#ffaa30', fontWeight: 600, marginBottom: 4, fontFamily: 'var(--font-mono)' }}>
+              {mode === 'personal' ? 'Personal Workspace' : 'Business Workspace'}
             </div>
-            <div style={{ fontSize: 20, fontWeight: 'bold', letterSpacing: '0.02em', color: '#ffaa30', textShadow: '0 0 8px rgba(255, 170, 48, 0.6)', fontFamily: 'var(--font-sans)' }}>
+            <div style={{ fontSize: 20, fontWeight: 'bold', letterSpacing: '0.02em', color: '#ffcc66', textShadow: '0 0 8px rgba(255, 170, 48, 0.4)', fontFamily: 'var(--font-sans)' }}>
               Good evening, {user?.displayName ?? user?.name ?? 'Operator'}.
             </div>
           </div>
@@ -199,10 +199,10 @@ export default function DashboardPage() {
 
       {loading ? (
         <div style={{ padding: '60px', textAlign: 'center' }}>
-          <PageLoader label="INITIALIZING OPERATIONAL MATRIX…" />
+          <PageLoader label="Loading dashboard…" />
         </div>
       ) : error ? (
-        <ErrorState title="DASHBOARD ERROR" error={error.message} />
+        <ErrorState title="Failed to load dashboard" error={error.message} />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
           {/* Central Command Center */}

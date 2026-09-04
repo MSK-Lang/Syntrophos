@@ -216,7 +216,7 @@ export default function KnowledgePage() {
       <PageHeader
         variant="wide"
         icon={<IconGraph width={22} height={22} />}
-        title="KNOWLEDGE // INTELLIGENCE MATRIX"
+        title="Knowledge"
         subtitle="Everything Syntrophos knows, connected and searchable."
         actions={[
           {
@@ -462,7 +462,7 @@ function SourceDetailDrawer({
       <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.95)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>
           <IconGraph width={14} height={14} />
-          <span>SOURCE DETAIL // {source.name.toUpperCase()}</span>
+          <span>Source Details</span>
         </div>
         <button type="button" onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#885522', cursor: 'pointer' }}>
           <IconX width={16} height={16} />

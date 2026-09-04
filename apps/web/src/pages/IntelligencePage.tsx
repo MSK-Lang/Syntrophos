@@ -93,7 +93,7 @@ export default function IntelligencePage() {
       <PageHeader
         variant="wide"
         icon={<IconBot width={22} height={22} />}
-        title="INTELLIGENCE // AGENTS & WORKFLOWS CONTROL CENTER"
+        title="Intelligence"
         subtitle="Agents, workflows, and autonomous execution."
         actions={[
           {
@@ -333,7 +333,7 @@ function RunDetailDrawer({
       <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 170, 48, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(14, 7, 1, 0.95)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>
           <IconBot width={14} height={14} />
-          <span>EXECUTION TRACE // {run.id.toUpperCase()}</span>
+          <span>Execution Details</span>
         </div>
         <button type="button" onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#885522', cursor: 'pointer' }}>
           <IconX width={16} height={16} />
@@ -343,13 +343,13 @@ function RunDetailDrawer({
       <div style={{ padding: '20px', flex: '1 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 18 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 'bold', color: '#ffcc66', marginBottom: 2 }}>{run.name}</div>
-          <div style={{ fontSize: 11, color: '#885522', fontFamily: 'var(--font-mono)' }}>SOURCE: {run.sourceName} ({run.type})</div>
+          <div style={{ fontSize: 11, color: '#885522', fontFamily: 'var(--font-mono)' }}>Source: {run.sourceName} ({run.type})</div>
         </div>
 
         {/* Observable Execution Steps */}
         <div>
           <div style={{ fontSize: 10, color: '#ffaa30', fontWeight: 'bold', fontFamily: 'var(--font-mono)', marginBottom: 8 }}>
-            OBSERVABLE STEP TRACE
+            Execution Steps
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--font-mono)', fontSize: 11 }}>
             <div style={{ color: '#34d399' }}>✓ Trigger received ({run.triggerText})</div>
