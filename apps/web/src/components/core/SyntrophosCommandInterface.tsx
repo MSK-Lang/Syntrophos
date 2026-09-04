@@ -47,12 +47,21 @@ const QUICK_PROMPTS = [
   'Watch my project for changes.',
 ] as const;
 
+const STATE_CONFIG: Record<OrbState, { label: string; color: string; glow: string }> = {
+  IDLE: { label: 'READY', color: '#ffaa30', glow: 'rgba(255, 170, 48, 0.5)' },
+  LISTENING: { label: 'LISTENING', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.6)' },
+  THINKING: { label: 'THINKING', color: '#a78bfa', glow: 'rgba(167, 139, 250, 0.7)' },
+  ACTING: { label: 'ACTING', color: '#10b981', glow: 'rgba(16, 185, 129, 0.7)' },
+  ALERT: { label: 'ALERT', color: '#ef4444', glow: 'rgba(239, 68, 68, 0.7)' },
+};
+
 export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterfaceProps) {
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [latestResponse, setLatestResponse] = useState<AgentResponse | null>(null);
   const [isListeningVoice, setIsListeningVoice] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<WebSpeechRecognition | null>(null);
@@ -113,7 +122,6 @@ export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterf
 
   const toggleVoice = () => {
     if (!voiceSupported || !recognitionRef.current) {
-      // Graceful fallback simulation
       setInput('Remind me to study at 8 PM.');
       inputRef.current?.focus();
       return;
@@ -150,6 +158,7 @@ export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterf
 
     setIsProcessing(true);
     setLatestResponse(null);
+    setShowSuggestions(false);
 
     try {
       const response = await agentEngine.processCommand(promptText);
@@ -181,68 +190,92 @@ export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterf
 
   const handleQuickPrompt = (prompt: string) => {
     setInput(prompt);
+    setShowSuggestions(false);
     inputRef.current?.focus();
     void executeDirective(prompt);
   };
+
+  const stateInfo = STATE_CONFIG[orbState];
 
   return (
     <div
       style={{
         position: 'fixed',
-        bottom: 28,
+        bottom: 32,
         left: '50%',
         transform: 'translateX(-50%)',
-        width: 'min(760px, 94vw)',
+        width: 'min(640px, 92vw)',
         zIndex: 40,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 12,
+        gap: 10,
         pointerEvents: 'auto',
       }}
     >
-      {/* REAL-TIME AGENT RESPONSE POPUP */}
+      {/* ─────────────────────────────────────────────────────────────────────────────
+       * 1. SUBTLE STATE INDICATOR (CENTERED BELOW ORB)
+       * ──────────────────────────────────────────────────────────────────────────── */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: '0.14em',
+          color: stateInfo.color,
+          userSelect: 'none',
+          marginBottom: 2,
+          transition: 'all 200ms ease',
+        }}
+      >
+        <span
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: '50%',
+            background: stateInfo.color,
+            boxShadow: `0 0 8px ${stateInfo.glow}`,
+          }}
+        />
+        <span>{stateInfo.label}</span>
+      </div>
+
+      {/* ─────────────────────────────────────────────────────────────────────────────
+       * 2. REAL-TIME AGENT RESPONSE POPUP
+       * ──────────────────────────────────────────────────────────────────────────── */}
       {latestResponse && (
         <div
           style={{
             width: '100%',
-            background: 'rgba(10, 6, 2, 0.94)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 170, 48, 0.4)',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 170, 48, 0.15)',
-            borderRadius: 12,
-            padding: '16px 20px',
+            background: 'rgba(8, 4, 1, 0.94)',
+            backdropFilter: 'blur(24px)',
+            border: '1px solid rgba(255, 170, 48, 0.35)',
+            boxShadow: '0 16px 50px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 170, 48, 0.1)',
+            borderRadius: 10,
+            padding: '14px 18px',
             color: '#fff5e6',
             fontFamily: 'var(--font-sans)',
             display: 'flex',
             flexDirection: 'column',
-            gap: 8,
-            animation: 'fadeInUp 240ms cubic-bezier(0.16, 1, 0.3, 1)',
+            gap: 6,
+            animation: 'fadeInUp 200ms ease',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  background: '#ffaa30',
-                  boxShadow: '0 0 10px #ffaa30',
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 11,
-                  fontWeight: 'bold',
-                  letterSpacing: '0.12em',
-                  color: '#ffcc66',
-                }}
-              >
-                SYNTHROPHOS // DIRECTIVE EXECUTED
-              </span>
-            </div>
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                fontWeight: 'bold',
+                letterSpacing: '0.12em',
+                color: '#ffaa30',
+              }}
+            >
+              SYNTHROPHOS
+            </span>
 
             <button
               type="button"
@@ -252,8 +285,8 @@ export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterf
                 border: 'none',
                 color: '#885522',
                 cursor: 'pointer',
-                fontSize: 14,
-                padding: '2px 6px',
+                fontSize: 13,
+                padding: '0 4px',
               }}
               title="Dismiss"
             >
@@ -261,7 +294,7 @@ export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterf
             </button>
           </div>
 
-          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: '#f3e5d3' }}>
+          <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, color: '#f5e8d8' }}>
             {latestResponse.text}
           </p>
 
@@ -272,10 +305,11 @@ export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterf
                 fontFamily: 'var(--font-mono)',
                 fontSize: 10,
                 color: '#ffaa30',
-                background: 'rgba(255, 170, 48, 0.12)',
-                border: '1px solid rgba(255, 170, 48, 0.25)',
-                padding: '3px 8px',
-                borderRadius: 4,
+                background: 'rgba(255, 170, 48, 0.1)',
+                border: '1px solid rgba(255, 170, 48, 0.2)',
+                padding: '2px 7px',
+                borderRadius: 3,
+                marginTop: 2,
               }}
             >
               ✓ {latestResponse.actionSummary}
@@ -284,193 +318,182 @@ export function SyntrophosCommandInterface({ orbState }: SyntrophosCommandInterf
         </div>
       )}
 
-      {/* COMMAND INPUT BAR */}
+      {/* ─────────────────────────────────────────────────────────────────────────────
+       * 3. COMMAND INPUT BAR (MINIMAL, ELEGANT, QUIET)
+       * ──────────────────────────────────────────────────────────────────────────── */}
       <form
         onSubmit={handleSubmit}
+        className="syntrophos-command-dock"
         style={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          background: 'rgba(8, 4, 1, 0.88)',
-          backdropFilter: 'blur(24px)',
           border: isProcessing
             ? '1px solid #ffaa30'
             : isListeningVoice
             ? '1px solid #00f0ff'
-            : '1px solid rgba(255, 170, 48, 0.35)',
-          borderRadius: 36,
+            : '1px solid rgba(255, 170, 48, 0.28)',
           boxShadow: isProcessing
-            ? '0 0 35px rgba(255, 170, 48, 0.35)'
-            : '0 20px 50px rgba(0, 0, 0, 0.75)',
-          padding: '8px 12px 8px 20px',
-          gap: 12,
-          transition: 'all 240ms ease',
+            ? '0 0 30px rgba(255, 170, 48, 0.25)'
+            : undefined,
         }}
       >
-        {/* State / Pulse Dot */}
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            borderRadius: '50%',
-            background:
-              orbState === 'THINKING'
-                ? '#a78bfa'
-                : orbState === 'ACTING'
-                ? '#10b981'
-                : isListeningVoice
-                ? '#00f0ff'
-                : '#ffaa30',
-            boxShadow: `0 0 12px ${
-              orbState === 'THINKING'
-                ? '#a78bfa'
-                : orbState === 'ACTING'
-                ? '#10b981'
-                : isListeningVoice
-                ? '#00f0ff'
-                : '#ffaa30'
-            }`,
-            animation: isProcessing || isListeningVoice ? 'pulse 1s infinite' : 'none',
-          }}
-          title={`Status: ${orbState}`}
-        />
-
-        {/* Text Input */}
+        {/* Subtle Seamless Input Field (Zero inner border, blends into dock) */}
         <input
           ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
+          className="syntrophos-command-input"
           placeholder={
             isListeningVoice
-              ? 'Listening to speech...'
+              ? 'Listening...'
               : isProcessing
-              ? 'Syntrophos processing...'
-              : 'Talk to Syntrophos... (e.g. "Remind me to study at 8 PM")'
+              ? 'Syntrophos thinking...'
+              : 'Talk to Syntrophos...'
           }
           disabled={isProcessing}
-          style={{
-            flex: 1,
-            background: 'transparent',
-            border: 'none',
-            outline: 'none',
-            color: '#fff5e6',
-            fontSize: 15,
-            fontFamily: 'var(--font-sans)',
-            letterSpacing: '0.01em',
-          }}
+          autoComplete="off"
+          spellCheck={false}
         />
 
-        {/* Hotkey Indicator */}
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            color: '#774411',
-            background: 'rgba(255, 170, 48, 0.08)',
-            padding: '3px 7px',
-            borderRadius: 4,
-            border: '1px solid rgba(255, 170, 48, 0.15)',
-            userSelect: 'none',
-          }}
-        >
-          ⌘K
-        </span>
-
-        {/* Voice Input Mic Button */}
+        {/* Subtle Voice Mic Button */}
         <button
           type="button"
           onClick={toggleVoice}
           style={{
-            background: isListeningVoice ? '#00f0ff' : 'rgba(255, 170, 48, 0.1)',
-            border: isListeningVoice
-              ? '1px solid #00f0ff'
-              : '1px solid rgba(255, 170, 48, 0.25)',
+            background: isListeningVoice ? 'rgba(0, 240, 255, 0.2)' : 'transparent',
+            border: 'none',
             borderRadius: '50%',
-            width: 36,
-            height: 36,
+            width: 32,
+            height: 32,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isListeningVoice ? '#000000' : '#ffaa30',
+            color: isListeningVoice ? '#00f0ff' : '#aa7744',
             cursor: 'pointer',
-            transition: 'all 180ms ease',
+            transition: 'all 160ms ease',
           }}
           title={isListeningVoice ? 'Stop listening' : 'Voice command'}
           aria-label="Toggle voice command"
         >
-          <IconVoice className="w-4 h-4" />
+          <IconVoice className="w-3.5 h-3.5" />
         </button>
 
-        {/* Send Button */}
+        {/* Subtle Transmit Button */}
         <button
           type="submit"
           disabled={!input.trim() || isProcessing}
           style={{
-            background: input.trim() ? '#ffaa30' : 'rgba(255, 170, 48, 0.15)',
-            color: input.trim() ? '#000000' : '#885522',
+            background: input.trim() ? '#ffaa30' : 'rgba(255, 170, 48, 0.1)',
+            color: input.trim() ? '#000000' : '#664422',
             border: 'none',
-            borderRadius: 20,
-            padding: '8px 18px',
-            fontSize: 12,
-            fontFamily: 'var(--font-mono)',
+            borderRadius: '50%',
+            width: 32,
+            height: 32,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 14,
             fontWeight: 'bold',
-            letterSpacing: '0.08em',
             cursor: input.trim() && !isProcessing ? 'pointer' : 'default',
-            transition: 'all 180ms ease',
+            transition: 'all 160ms ease',
           }}
+          aria-label="Transmit directive"
+          title="Transmit directive"
         >
-          {isProcessing ? 'EXEC' : 'TRANSMIT'}
+          ↑
         </button>
       </form>
 
-      {/* QUICK COMMAND SUGGESTION CHIPS */}
-      <div
+      {/* ─────────────────────────────────────────────────────────────────────────────
+       * 4. SUBTLE SUGGESTIONS TOGGLE (HIDDEN BY DEFAULT)
+       * ──────────────────────────────────────────────────────────────────────────── */}
+      <button
+        type="button"
+        onClick={() => setShowSuggestions(!showSuggestions)}
         style={{
+          background: 'transparent',
+          border: 'none',
+          color: '#885522',
+          fontSize: 10,
+          fontFamily: 'var(--font-mono)',
+          letterSpacing: '0.08em',
+          cursor: 'pointer',
+          padding: '2px 8px',
           display: 'flex',
-          gap: 8,
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          maxWidth: '100%',
-          overflowX: 'auto',
-          padding: '2px 0',
+          alignItems: 'center',
+          gap: 4,
+          transition: 'color 160ms ease',
         }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = '#ffaa30')}
+        onMouseLeave={(e) => (e.currentTarget.style.color = '#885522')}
       >
-        {QUICK_PROMPTS.map((prompt) => (
-          <button
-            key={prompt}
-            type="button"
-            onClick={() => handleQuickPrompt(prompt)}
-            disabled={isProcessing}
+        <span>Suggestions</span>
+        <span>{showSuggestions ? '▴' : '▾'}</span>
+      </button>
+
+      {/* EXPANDED SUGGESTIONS FLOATING DRAWER */}
+      {showSuggestions && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 6,
+            background: 'rgba(8, 4, 1, 0.92)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 170, 48, 0.25)',
+            borderRadius: 8,
+            padding: '10px',
+            width: '100%',
+            boxShadow: '0 12px 35px rgba(0, 0, 0, 0.8)',
+            animation: 'fadeIn 160ms ease',
+          }}
+        >
+          <div
             style={{
-              background: 'rgba(12, 6, 2, 0.72)',
-              backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(255, 170, 48, 0.22)',
-              borderRadius: 16,
-              color: '#d99a4e',
-              fontSize: 11,
+              fontSize: 9,
               fontFamily: 'var(--font-mono)',
-              padding: '5px 12px',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              transition: 'all 160ms ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#ffaa30';
-              e.currentTarget.style.color = '#fff5e6';
-              e.currentTarget.style.background = 'rgba(255, 170, 48, 0.12)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 170, 48, 0.22)';
-              e.currentTarget.style.color = '#d99a4e';
-              e.currentTarget.style.background = 'rgba(12, 6, 2, 0.72)';
+              color: '#885522',
+              letterSpacing: '0.1em',
+              paddingLeft: 4,
             }}
           >
-            {prompt}
-          </button>
-        ))}
-      </div>
+            NATURAL LANGUAGE DIRECTIVES
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {QUICK_PROMPTS.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => handleQuickPrompt(prompt)}
+                style={{
+                  background: 'rgba(255, 170, 48, 0.06)',
+                  border: '1px solid rgba(255, 170, 48, 0.18)',
+                  borderRadius: 12,
+                  color: '#d99a4e',
+                  fontSize: 11,
+                  fontFamily: 'var(--font-mono)',
+                  padding: '4px 10px',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 140ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#ffaa30';
+                  e.currentTarget.style.color = '#fff5e6';
+                  e.currentTarget.style.background = 'rgba(255, 170, 48, 0.14)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255, 170, 48, 0.18)';
+                  e.currentTarget.style.color = '#d99a4e';
+                  e.currentTarget.style.background = 'rgba(255, 170, 48, 0.06)';
+                }}
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

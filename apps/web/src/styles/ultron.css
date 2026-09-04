@@ -89,6 +89,71 @@ body {
   align-items: flex-end;
 }
 
+/* Core Clean View — hides debug HUD controls and hints by default */
+.core-clean-view .hud-title {
+  display: none;
+}
+
+.core-clean-view .hud-hint,
+.core-clean-view .hud-controls {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.core-clean-view.show-orb-controls .hud-hint,
+.core-clean-view.show-orb-controls .hud-controls {
+  display: flex;
+  opacity: 1;
+}
+
+/* Syntrophos Clean Command Dock & Seamless Input */
+.syntrophos-command-dock {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: rgba(6, 3, 1, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 170, 48, 0.28);
+  border-radius: 28px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.75);
+  padding: 6px 8px 6px 18px;
+  gap: 10px;
+  transition: all 200ms ease;
+}
+
+.syntrophos-command-dock:focus-within {
+  border-color: rgba(255, 170, 48, 0.6) !important;
+  box-shadow: 0 0 25px rgba(255, 170, 48, 0.2), 0 12px 40px rgba(0, 0, 0, 0.8) !important;
+}
+
+.syntrophos-command-input {
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  color: #fff5e6 !important;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
+  padding: 8px 0 !important;
+  margin: 0 !important;
+}
+
+.syntrophos-command-input:focus,
+.syntrophos-command-input:focus-visible,
+.syntrophos-command-input:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .hud-btn {
   min-width: 44px;
   height: 44px;

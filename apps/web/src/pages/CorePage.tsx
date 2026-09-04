@@ -25,6 +25,7 @@ export default function CorePage() {
   const [loaderRevealed, setLoaderRevealed] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showOrbControls, setShowOrbControls] = useState(false);
 
   const onboarding = getOnboardingState();
   const [showWelcomeModal, setShowWelcomeModal] = useState<boolean>(
@@ -84,7 +85,10 @@ export default function CorePage() {
   const isReady = coreStatus === 'ready';
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', background: '#000000' }}>
+    <div
+      className={`core-clean-view ${showOrbControls ? 'show-orb-controls' : ''}`}
+      style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', background: '#000000' }}
+    >
       {/* Global Syntrophos Loading Screen */}
       {!loaderRevealed && (
         <SyntrophosLoading
@@ -107,6 +111,8 @@ export default function CorePage() {
           notifications={demoState.notifications}
           monitors={demoState.monitors}
           isGuest={isGuest}
+          showOrbControls={showOrbControls}
+          onToggleOrbControls={() => setShowOrbControls((prev) => !prev)}
           onSaveSyntrophos={() => setShowSaveModal(true)}
         />
       )}
