@@ -28,6 +28,7 @@ export interface AuthContextType {
   currentWorkspace: Workspace | null;
   loading: boolean;
   isAuthenticated: boolean;
+  isGuest: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null; user?: User }>;
   signUp: (
     email: string,
@@ -81,13 +82,31 @@ async function parseResponseJson<T>(res: Response): Promise<{ data: T | null; er
   return { data: json as T, error: null };
 }
 
+export const GUEST_USER: User = {
+  id: 'guest-operator',
+  email: 'guest@syntrophos.local',
+  name: 'Guest Operator',
+  displayName: 'Guest Operator',
+  avatarUrl: null,
+  emailVerified: false,
+};
+
+export const GUEST_WORKSPACE: Workspace = {
+  id: 'workspace-demo',
+  name: 'Syntrophos Demo Environment',
+  workspaceType: 'personal',
+  subscriptionPlan: 'demo',
+  role: 'operator',
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [currentWorkspaceId, setCurrentWorkspaceIdState] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(GUEST_USER);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([GUEST_WORKSPACE]);
+  const [currentWorkspaceId, setCurrentWorkspaceIdState] = useState<string | null>('workspace-demo');
+  const [isGuest, setIsGuest] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const fetchMe = useCallback(async (): Promise<{ user: User | null; workspaces: Workspace[] }> => {
+  const fetchMe = useCallback(async (): Promise<{ user: User | null; workspaces: Workspace[]; isGuest: boolean }> => {
     try {
       const res = await fetch(`${API_BASE}/auth/me`, {
         method: 'GET',
@@ -98,41 +117,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       const { data, error } = await parseResponseJson<{ user?: User; workspaces?: Workspace[] }>(res);
-      if (error || !data) {
-        return { user: null, workspaces: [] };
+      if (error || !data || !data.user) {
+        return { user: GUEST_USER, workspaces: [GUEST_WORKSPACE], isGuest: true };
       }
 
       return {
-        user: data.user || null,
-        workspaces: Array.isArray(data.workspaces) ? data.workspaces : [],
+        user: data.user,
+        workspaces: Array.isArray(data.workspaces) && data.workspaces.length > 0 ? data.workspaces : [GUEST_WORKSPACE],
+        isGuest: false,
       };
-    } catch (err) {
-      console.warn('[Syntrophos Auth] Failed to fetch active session:', err);
-      return { user: null, workspaces: [] };
+    } catch {
+      return { user: GUEST_USER, workspaces: [GUEST_WORKSPACE], isGuest: true };
     }
   }, []);
 
   const refreshSession = useCallback(async () => {
-    const { user: fetchedUser, workspaces: fetchedWorkspaces } = await fetchMe();
+    const { user: fetchedUser, workspaces: fetchedWorkspaces, isGuest: fetchedGuest } = await fetchMe();
     setUser(fetchedUser);
     setWorkspaces(fetchedWorkspaces);
+    setIsGuest(fetchedGuest);
     if (fetchedWorkspaces.length > 0 && fetchedWorkspaces[0]) {
       const firstWs = fetchedWorkspaces[0];
       setCurrentWorkspaceIdState((prev) =>
         prev && fetchedWorkspaces.some((w) => w.id === prev) ? prev : firstWs.id,
       );
-    } else {
-      setCurrentWorkspaceIdState(null);
     }
     setLoading(false);
   }, [fetchMe]);
 
   useEffect(() => {
     let isMounted = true;
-    void fetchMe().then(({ user: fetchedUser, workspaces: fetchedWorkspaces }) => {
+    void fetchMe().then(({ user: fetchedUser, workspaces: fetchedWorkspaces, isGuest: fetchedGuest }) => {
       if (isMounted) {
         setUser(fetchedUser);
         setWorkspaces(fetchedWorkspaces);
+        setIsGuest(fetchedGuest);
         if (fetchedWorkspaces.length > 0 && fetchedWorkspaces[0]) {
           setCurrentWorkspaceIdState(fetchedWorkspaces[0].id);
         }
@@ -263,6 +282,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       currentWorkspace,
       loading,
       isAuthenticated: Boolean(user),
+      isGuest,
       signIn,
       signUp,
       signOut,

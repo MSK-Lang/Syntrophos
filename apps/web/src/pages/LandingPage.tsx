@@ -97,7 +97,7 @@ export default function LandingPage() {
               variant="primary"
               size="md"
               className="public-btn-tactile"
-              onClick={() => navigate('/sign-up')}
+              onClick={() => navigate('/core')}
               style={{ fontFamily: 'var(--font-mono)', fontWeight: 'bold', padding: '14px 32px', fontSize: 13 }}
             >
               [ GET STARTED ]
@@ -524,7 +524,7 @@ export default function LandingPage() {
           variant="primary"
           size="md"
           className="public-btn-tactile"
-          onClick={() => navigate('/sign-up')}
+          onClick={() => navigate('/core')}
           style={{ fontFamily: 'var(--font-mono)', fontWeight: 'bold', padding: '16px 40px', fontSize: 14, marginTop: 12 }}
         >
           [ GET STARTED NOW ]

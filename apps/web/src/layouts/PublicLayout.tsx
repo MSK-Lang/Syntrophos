@@ -72,7 +72,7 @@ export function PublicNavbar() {
           variant="primary"
           size="sm"
           className="public-btn-tactile"
-          onClick={() => navigate('/sign-up')}
+          onClick={() => navigate('/core')}
           style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 'bold', padding: '9px 18px', borderRadius: 4 }}
         >
           [ GET STARTED ]
