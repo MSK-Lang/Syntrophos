@@ -43,6 +43,17 @@ const SettingsVoicePage = lazy(() => import('@/pages/settings/SettingsVoicePage.
 const SettingsAiPage = lazy(() => import('@/pages/settings/SettingsAiPage.js'));
 const SettingsAppearancePage = lazy(() => import('@/pages/settings/SettingsAppearancePage.js'));
 
+// Business Workspace & Fulfillment OS routes
+const BusinessCommandCenterPage = lazy(() => import('@/pages/business/BusinessCommandCenterPage.js'));
+const BusinessObjectivesPage = lazy(() => import('@/pages/business/BusinessObjectivesPage.js'));
+const BusinessFulfillmentPage = lazy(() => import('@/pages/business/BusinessFulfillmentPage.js'));
+const BusinessProjectsPage = lazy(() => import('@/pages/business/BusinessProjectsPage.js'));
+const BusinessClientsPage = lazy(() => import('@/pages/business/BusinessClientsPage.js'));
+const BusinessAgentsPage = lazy(() => import('@/pages/business/BusinessAgentsPage.js'));
+const BusinessTeamPage = lazy(() => import('@/pages/business/BusinessTeamPage.js'));
+const BusinessReportsPage = lazy(() => import('@/pages/business/BusinessReportsPage.js'));
+const BusinessSettingsPage = lazy(() => import('@/pages/business/BusinessSettingsPage.js'));
+
 const PublicLayout = lazy(() => import('@/layouts/PublicLayout.js'));
 const AboutPage = lazy(() => import('@/pages/AboutPage.js'));
 const FaqPage = lazy(() => import('@/pages/FaqPage.js'));
@@ -102,6 +113,16 @@ const shellRoutes: RouteObject = {
         { path: 'notifications', element: <SettingsNotificationsPage /> },
       ],
     },
+    // Business Fulfillment OS routes
+    { path: '/business', element: <BusinessCommandCenterPage /> },
+    { path: '/business/objectives', element: <BusinessObjectivesPage /> },
+    { path: '/business/fulfillment', element: <BusinessFulfillmentPage /> },
+    { path: '/business/projects', element: <BusinessProjectsPage /> },
+    { path: '/business/clients', element: <BusinessClientsPage /> },
+    { path: '/business/agents', element: <BusinessAgentsPage /> },
+    { path: '/business/team', element: <BusinessTeamPage /> },
+    { path: '/business/reports', element: <BusinessReportsPage /> },
+    { path: '/business/settings', element: <BusinessSettingsPage /> },
     { path: '*', element: <NotFoundPage /> },
   ],
 };

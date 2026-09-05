@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   createContext,
   useCallback,
@@ -23,6 +23,9 @@ import {
   IconFolder,
   IconGraph,
   IconCheckCircle,
+  IconZap,
+  IconWorkflow,
+  IconWorkspace,
   type IconComponent,
 } from '@/lib/icons.js';
 
@@ -48,6 +51,18 @@ const MODULE_NAV: readonly NavItem[] = [
   { id: 'people-schedule', label: 'People & Schedule', to: '/calendar', Icon: IconCalendar, badge: 2 },
   { id: 'intelligence', label: 'Intelligence', to: '/intelligence', Icon: IconBot, badge: 5 },
   { id: 'knowledge', label: 'Knowledge', to: '/knowledge', Icon: IconGraph, badge: 184 },
+];
+
+const BUSINESS_NAV: readonly NavItem[] = [
+  { id: 'biz-command', label: 'Command Center', to: '/business', Icon: IconDashboard },
+  { id: 'biz-objectives', label: 'Objectives', to: '/business/objectives', Icon: IconZap, badge: 3 },
+  { id: 'biz-fulfillment', label: 'Fulfillment', to: '/business/fulfillment', Icon: IconWorkflow, badge: 2 },
+  { id: 'biz-projects', label: 'Projects', to: '/business/projects', Icon: IconFolder },
+  { id: 'biz-clients', label: 'Clients', to: '/business/clients', Icon: IconWorkspace, badge: 4 },
+  { id: 'biz-agents', label: 'Agents', to: '/business/agents', Icon: IconBot, badge: 5 },
+  { id: 'biz-team', label: 'Team', to: '/business/team', Icon: IconTasks },
+  { id: 'biz-reports', label: 'Reports', to: '/business/reports', Icon: IconGraph },
+  { id: 'biz-settings', label: 'Settings', to: '/business/settings', Icon: IconSettings },
 ];
 
 const UTILITY_NAV: readonly NavItem[] = [
@@ -301,12 +316,17 @@ export function Sidebar({
   readonly onNavigate?: () => void;
 }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user } = useAuth();
+  const isBusinessMode = location.pathname.startsWith('/business');
 
   const isActive = useCallback(
     (to: string) => {
       if (to === '/core') {
         return location.pathname === '/' || location.pathname === '/core';
+      }
+      if (to === '/business') {
+        return location.pathname === '/business';
       }
       return location.pathname === to || location.pathname.startsWith(`${to}/`);
     },
@@ -359,60 +379,154 @@ export function Sidebar({
       </div>
 
       <SidebarNav>
-        {/* System Environment Tier */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <div
-            className="shell-sidebar__section-title"
+        {/* Workspace Mode Switcher */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: 'rgba(255, 170, 48, 0.05)',
+            border: '1px solid rgba(255, 170, 48, 0.2)',
+            borderRadius: 6,
+            padding: 2,
+            marginBottom: 10,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              navigate('/dashboard');
+              onNavigate?.();
+            }}
             style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
               fontFamily: 'var(--font-mono)',
-              fontSize: '9px',
-              letterSpacing: '0.15em',
-              color: '#885522',
-              padding: '0 10px',
-              marginBottom: 4,
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              background: !isBusinessMode ? 'rgba(255, 170, 48, 0.2)' : 'transparent',
+              color: !isBusinessMode ? '#ffcc66' : '#885522',
+              boxShadow: !isBusinessMode ? '0 0 8px rgba(255, 170, 48, 0.25) inset' : 'none',
+              transition: 'all 120ms ease',
             }}
           >
-            SYSTEM
-          </div>
-          {SYSTEM_NAV.map((item) => (
-            <SidebarNavItem
-              key={item.id}
-              label={item.label}
-              to={item.to}
-              Icon={item.Icon}
-              active={isActive(item.to)}
-              onClick={onNavigate}
-            />
-          ))}
+            PERSONAL
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              navigate('/business');
+              onNavigate?.();
+            }}
+            style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              background: isBusinessMode ? 'rgba(255, 170, 48, 0.2)' : 'transparent',
+              color: isBusinessMode ? '#ffcc66' : '#885522',
+              boxShadow: isBusinessMode ? '0 0 8px rgba(255, 170, 48, 0.25) inset' : 'none',
+              transition: 'all 120ms ease',
+            }}
+          >
+            BUSINESS
+          </button>
         </div>
 
-        {/* Modules Tier */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <div
-            className="shell-sidebar__section-title"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '9px',
-              letterSpacing: '0.15em',
-              color: '#885522',
-              padding: '0 10px',
-              marginBottom: 4,
-            }}
-          >
-            OPERATIONS
+        {isBusinessMode ? (
+          /* Business Workspace Tier */
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div
+              className="shell-sidebar__section-title"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '9px',
+                letterSpacing: '0.15em',
+                color: '#885522',
+                padding: '0 10px',
+                marginBottom: 4,
+              }}
+            >
+              BUSINESS ORCHESTRATION
+            </div>
+            {BUSINESS_NAV.map((item) => (
+              <SidebarNavItem
+                key={item.id}
+                label={item.label}
+                to={item.to}
+                Icon={item.Icon}
+                active={isActive(item.to)}
+                onClick={onNavigate}
+                badge={item.badge}
+              />
+            ))}
           </div>
-          {MODULE_NAV.map((item) => (
-            <SidebarNavItem
-              key={item.id}
-              label={item.label}
-              to={item.to}
-              Icon={item.Icon}
-              active={isActive(item.to)}
-              onClick={onNavigate}
-              badge={item.badge}
-            />
-          ))}
-        </div>
+        ) : (
+          <>
+            {/* System Environment Tier */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <div
+                className="shell-sidebar__section-title"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '9px',
+                  letterSpacing: '0.15em',
+                  color: '#885522',
+                  padding: '0 10px',
+                  marginBottom: 4,
+                }}
+              >
+                SYSTEM
+              </div>
+              {SYSTEM_NAV.map((item) => (
+                <SidebarNavItem
+                  key={item.id}
+                  label={item.label}
+                  to={item.to}
+                  Icon={item.Icon}
+                  active={isActive(item.to)}
+                  onClick={onNavigate}
+                />
+              ))}
+            </div>
+
+            {/* Modules Tier */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <div
+                className="shell-sidebar__section-title"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '9px',
+                  letterSpacing: '0.15em',
+                  color: '#885522',
+                  padding: '0 10px',
+                  marginBottom: 4,
+                }}
+              >
+                OPERATIONS
+              </div>
+              {MODULE_NAV.map((item) => (
+                <SidebarNavItem
+                  key={item.id}
+                  label={item.label}
+                  to={item.to}
+                  Icon={item.Icon}
+                  active={isActive(item.to)}
+                  onClick={onNavigate}
+                  badge={item.badge}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Utility / Settings */}
         <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>

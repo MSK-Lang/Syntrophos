@@ -21,6 +21,7 @@ import type { Task } from '@/lib/services/tasks.contract.js';
 import type { Note } from '@/lib/services/notes.contract.js';
 import type { Agent, AgentRun } from '@/lib/services/agents.contract.js';
 import type { CalendarEvent } from '@/lib/services/calendar.contract.js';
+import { agentEngine, type AgentResponse } from '@/lib/agentEngine.js';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -87,32 +88,88 @@ export default function DashboardPage() {
     };
   }, [listTasks, listNotes, listConversations, listAgents, listRuns, listEvents, getToday, getOverdue]);
 
-  const handleCommandExecute = async (prompt: string, directive?: string) => {
-    if (directive === 'task') {
+  const handleCommandExecute = async (
+    prompt: string,
+    directive?: string
+  ): Promise<AgentResponse | void> => {
+    let resolvedDirective = directive;
+    let cleanPrompt = prompt;
+
+    // Detect inline slash command if directive wasn't explicitly passed
+    const match = /^\/([a-zA-Z0-9_-]+)(?:\s+(.*))?$/.exec(prompt);
+    if (match && match[1]) {
+      resolvedDirective = resolvedDirective || match[1].toLowerCase();
+      cleanPrompt = match[2]?.trim() || prompt;
+    }
+
+    if (resolvedDirective === 'task') {
       await createTask({
-        title: prompt,
+        title: cleanPrompt,
         priority: 'high',
         status: 'todo',
         tags: ['command-center'],
       });
       const t = await listTasks({ pageSize: 50 });
       setTasks(t.items as Task[]);
-    } else if (directive === 'research' || directive === 'email' || directive === 'agent') {
+      return {
+        text: `Task created. "${cleanPrompt}" has been added to your active deliverable queue.`,
+        actionSummary: `Task queued: ${cleanPrompt}`,
+        state: 'IDLE',
+      };
+    }
+
+    if (resolvedDirective === 'research' || resolvedDirective === 'email' || resolvedDirective === 'agent') {
       try {
         const workflows = await listWorkflows?.({ pageSize: 5 });
         if (workflows?.items?.[0] && runWorkflow) {
-          await runWorkflow(workflows.items[0].id, { prompt });
+          await runWorkflow(workflows.items[0].id, { prompt: cleanPrompt });
           const r = await listRuns?.({ pageSize: 10 });
           if (r?.items) setRuns(r.items as AgentRun[]);
-        } else {
-          navigate(`/chat/new?prompt=${encodeURIComponent(prompt)}`);
+          return {
+            text: `Workflow dispatched for: "${cleanPrompt}". Telemetry is now streaming in live runs.`,
+            actionSummary: `Workflow triggered: ${workflows.items[0].name || resolvedDirective}`,
+            state: 'IDLE',
+          };
         }
+        navigate(`/chat/new?prompt=${encodeURIComponent(cleanPrompt)}`);
       } catch {
-        navigate(`/chat/new?prompt=${encodeURIComponent(prompt)}`);
+        navigate(`/chat/new?prompt=${encodeURIComponent(cleanPrompt)}`);
       }
-    } else {
-      navigate(`/chat/new?prompt=${encodeURIComponent(prompt)}`);
+      return;
     }
+
+    if (
+      resolvedDirective === 'remind' ||
+      resolvedDirective === 'plan' ||
+      resolvedDirective === 'schedule' ||
+      resolvedDirective === 'activity' ||
+      resolvedDirective === 'monitor'
+    ) {
+      return await agentEngine.processCommand(prompt);
+    }
+
+    // Check if natural language prompt matches agentEngine intents
+    const lower = prompt.toLowerCase();
+    if (
+      lower.includes('remind') ||
+      lower.includes('schedule') ||
+      lower.includes('planned today') ||
+      lower.includes('create a task') ||
+      lower.includes('add task') ||
+      lower.includes('what changed') ||
+      lower.includes('recent activity') ||
+      lower.includes('watch') ||
+      lower.includes('monitor')
+    ) {
+      const response = await agentEngine.processCommand(prompt);
+      if (lower.includes('task')) {
+        const t = await listTasks({ pageSize: 50 });
+        setTasks(t.items as Task[]);
+      }
+      return response;
+    }
+
+    navigate(`/chat/new?prompt=${encodeURIComponent(prompt)}`);
   };
 
   const handleQuickTask = async () => {
@@ -188,8 +245,10 @@ export default function DashboardPage() {
             </button>
             <button
               type="button"
-              onClick={() => setMode('business')}
-              className={`mode-switcher-tab ${mode === 'business' ? 'mode-switcher-tab--active' : ''}`}
+              onClick={() => {
+                navigate('/business');
+              }}
+              className="mode-switcher-tab"
             >
               BUSINESS
             </button>

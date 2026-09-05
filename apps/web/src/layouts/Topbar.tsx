@@ -194,7 +194,7 @@ export function Topbar({
             }}
           >
             <IconWorkspace width={13} height={13} style={{ color: '#ffaa30' }} />
-            <span>{currentWorkspace.status === 'success' ? currentWorkspace.data.settings.name : 'Personal'}</span>
+            <span>{location.pathname.startsWith('/business') ? 'Business' : (currentWorkspace.status === 'success' ? currentWorkspace.data.settings.name : 'Personal')}</span>
             <IconChevronDown width={12} height={12} style={{ color: '#885522' }} />
           </button>
 
@@ -222,17 +222,49 @@ export function Topbar({
               </div>
               <button
                 type="button"
-                onClick={() => { void switchTo('ws-personal'); setWsMenuOpen(false); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 4, background: 'rgba(255, 170, 48, 0.15)', border: 'none', color: '#ffcc66', fontSize: 12, cursor: 'pointer', textAlign: 'left' }}
+                onClick={() => {
+                  void switchTo('ws-personal');
+                  setWsMenuOpen(false);
+                  navigate('/dashboard');
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '6px 10px',
+                  borderRadius: 4,
+                  background: !location.pathname.startsWith('/business') ? 'rgba(255, 170, 48, 0.15)' : 'transparent',
+                  border: 'none',
+                  color: !location.pathname.startsWith('/business') ? '#ffcc66' : '#d99a4e',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                }}
               >
-                <span>●</span> Personal Workspace
+                <span>{!location.pathname.startsWith('/business') ? '●' : '○'}</span> Personal Workspace
               </button>
               <button
                 type="button"
-                onClick={() => { void switchTo('ws-business'); setWsMenuOpen(false); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 4, background: 'transparent', border: 'none', color: '#d99a4e', fontSize: 12, cursor: 'pointer', textAlign: 'left' }}
+                onClick={() => {
+                  void switchTo('ws-business');
+                  setWsMenuOpen(false);
+                  navigate('/business');
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '6px 10px',
+                  borderRadius: 4,
+                  background: location.pathname.startsWith('/business') ? 'rgba(255, 170, 48, 0.15)' : 'transparent',
+                  border: 'none',
+                  color: location.pathname.startsWith('/business') ? '#ffcc66' : '#d99a4e',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                }}
               >
-                <span>○</span> Business Workspace
+                <span>{location.pathname.startsWith('/business') ? '●' : '○'}</span> Business Workspace
               </button>
             </div>
           )}
